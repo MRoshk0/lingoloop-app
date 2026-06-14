@@ -1,0 +1,7 @@
+{
+  "name": "lingoloop-scaffold",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
