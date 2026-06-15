@@ -1,11 +1,18 @@
 import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
+import { Router } from '@angular/router';
+import { IonContent, IonCard, IonCardContent } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-cards',
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent],
+  imports: [IonContent, IonCard, IonCardContent],
   templateUrl: './cards.component.html',
   styleUrls: ['./cards.component.scss'],
 })
-export class CardsComponent {}
+export class CardsComponent {
+  constructor(private router: Router) {}
+
+  goTo(path: string) {
+    this.router.navigateByUrl(`/navbar/${path}`);
+  }
+}

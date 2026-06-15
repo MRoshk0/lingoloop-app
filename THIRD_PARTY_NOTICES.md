@@ -49,3 +49,18 @@ MIT License text:
 - **Usage:** Word frequency counts used to rank and select the top ~12,000 most
   common German nouns. Used in `scripts/build-dictionary.ts` only; raw data is
   not distributed with the app.
+
+---
+
+## MyMemory Translation API
+
+- **Provider:** Translated S.r.l. — https://mymemory.translated.net
+- **Usage:** Real-time German → Ukrainian word translation in the Dictionary tab.
+  Fetched on demand; no API key required for the free anonymous tier (1000 req/day/IP).
+- **Terms:** https://mymemory.translated.net/doc/usagelimits.aspx
+- **Data policy:** Translations returned by the API are sourced from MyMemory's
+  translation memory and public corpora. No user data beyond the queried word is sent.
+
+Note: `src/assets/data/german-nouns.json` is a **CC BY-SA 4.0 derivative work**
+of gambolputty/german-nouns (which is itself derived from Wiktionary).
+The raw source files (`nouns.csv`, `de_50k.txt`) are **not** distributed with this app.

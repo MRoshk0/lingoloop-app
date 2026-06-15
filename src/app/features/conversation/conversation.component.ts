@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/standalone';
+import { IonContent } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-conversation',
   standalone: true,
-  imports: [IonHeader, IonToolbar, IonTitle, IonContent],
+  imports: [IonContent],
   templateUrl: './conversation.component.html',
   styleUrls: ['./conversation.component.scss'],
 })

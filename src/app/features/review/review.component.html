@@ -1,5 +1,4 @@
 <ion-content>
-
   <!-- ── IDLE ── -->
   @if (state() === 'idle') {
     <div class="screen idle-screen">
@@ -19,29 +18,33 @@
   <!-- ── REVIEWING ── -->
   @if (state() === 'reviewing') {
     <div class="screen review-screen">
-      <p class="progress">{{ progress() }}</p>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" [style.width.%]="progressPercent()"></div>
+        </div>
+      </div>
 
-      <ion-card class="flashcard">
-        <ion-card-content>
-          <p class="front-text">{{ currentCard().frontText }}</p>
+      <div class="card-area">
+        <ion-card class="flashcard" (click)="!showAnswer() && reveal()">
+          <ion-card-content>
+            <p class="front-text">{{ currentCard().frontText }}</p>
 
-          @if (showAnswer()) {
-            <div class="divider"></div>
-            <p class="back-text">{{ currentCard().backText }}</p>
-          }
-        </ion-card-content>
-      </ion-card>
+            @if (showAnswer()) {
+              <div class="divider"></div>
+              <p class="back-text">{{ currentCard().backText }}</p>
+            } @else {
+              <p class="tap-hint">Tap to reveal</p>
+            }
+          </ion-card-content>
+        </ion-card>
+      </div>
 
-      @if (!showAnswer()) {
-        <ion-button expand="block" class="show-btn" (click)="reveal()">
-          Show Answer
-        </ion-button>
-      } @else {
+      @if (showAnswer()) {
         <div class="rating-grid">
           <ion-button class="rating-btn again" (click)="rate('again')">Again</ion-button>
-          <ion-button class="rating-btn hard"  (click)="rate('hard')">Hard</ion-button>
-          <ion-button class="rating-btn good"  (click)="rate('good')">Good</ion-button>
-          <ion-button class="rating-btn easy"  (click)="rate('easy')">Easy</ion-button>
+          <ion-button class="rating-btn hard" (click)="rate('hard')">Hard</ion-button>
+          <ion-button class="rating-btn good" (click)="rate('good')">Good</ion-button>
+          <ion-button class="rating-btn easy" (click)="rate('easy')">Easy</ion-button>
         </div>
       }
     </div>
@@ -84,5 +87,4 @@
       </ion-button>
     </div>
   }
-
 </ion-content>

@@ -1,0 +1,33 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/navbar/cards"></ion-back-button>
+    </ion-buttons>
+    <ion-title>My Cards</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="sets-grid">
+    @for (set of sets; track set.id) {
+      <ion-card class="set-card" button (click)="openSet(set.id)">
+        <ion-card-content>
+          <span class="set-emoji">🃏</span>
+          <p class="set-name">{{ set.name }}</p>
+          <p class="set-count">{{ set.cards.length }} cards</p>
+        </ion-card-content>
+      </ion-card>
+    }
+  </div>
+
+  @if (sets.length === 0) {
+    <p class="empty-state">No sets yet. Create your first card set!</p>
+  }
+
+  <div class="fab-area">
+    <ion-button expand="block" (click)="createSet()">
+      <ion-icon slot="start" name="add-outline"></ion-icon>
+      Create Card Set
+    </ion-button>
+  </div>
+</ion-content>

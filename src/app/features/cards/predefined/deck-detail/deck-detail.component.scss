@@ -1,0 +1,67 @@
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ion-text-color);
+  }
+
+  .count-badge {
+    background: var(--app-surface-color);
+    color: #b8a467;
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+}
+
+.play-section {
+  padding: 20px 16px 16px;
+
+  .play-btn {
+    --background: var(--ion-color-primary);
+    --background-activated: var(--ion-color-primary-shade);
+    --color: var(--ion-color-primary-contrast);
+    --border-radius: var(--app-border-radius);
+    height: 56px;
+    font-size: 17px;
+    font-weight: 700;
+  }
+}
+
+.card-list-wrap {
+  margin: 0 16px;
+  background: var(--app-surface-color);
+  border-radius: var(--app-border-radius);
+  overflow: hidden;
+}
+
+.card-row {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  gap: 8px;
+
+  .word {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ion-text-color);
+  }
+
+  .translation {
+    font-size: 14px;
+    color: #b8a467;
+    font-weight: 400;
+  }
+}
+
+.divider {
+  height: 1px;
+  background: rgba(61, 46, 0, 0.08);
+  margin: 0 16px;
+}

@@ -32,7 +32,7 @@ export interface WordEntry {
 function httpsGet(url: string): Promise<IncomingMessage> {
   return new Promise((resolve, reject) => {
     https
-      .get(url, res => {
+      .get(url, (res) => {
         if ((res.statusCode === 301 || res.statusCode === 302) && res.headers.location) {
           httpsGet(res.headers.location).then(resolve).catch(reject);
         } else {
@@ -163,7 +163,9 @@ async function main() {
   });
 
   console.log(`   ${rowCount.toLocaleString()} CSV rows parsed`);
-  console.log(`   ${candidates.length.toLocaleString()} nouns cross-referenced with frequency list`);
+  console.log(
+    `   ${candidates.length.toLocaleString()} nouns cross-referenced with frequency list`
+  );
 
   // Step 3 — sort by frequency desc, deduplicate by lemma, take top N
   candidates.sort((a, b) => b.freq - a.freq);
@@ -187,7 +189,7 @@ async function main() {
   console.log(`   File size: ${sizeKB} KB`);
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('❌', err);
   process.exit(1);
 });

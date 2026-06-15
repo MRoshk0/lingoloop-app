@@ -9,7 +9,7 @@ export const routes: Routes = [
   {
     path: 'navbar',
     loadComponent: () =>
-      import('./features/navbar/navbar.component').then(m => m.NavbarComponent),
+      import('./features/navbar/navbar.component').then((m) => m.NavbarComponent),
     children: [
       {
         path: 'cards',
@@ -17,7 +17,7 @@ export const routes: Routes = [
           {
             path: '',
             loadComponent: () =>
-              import('./features/cards/cards.component').then(m => m.CardsComponent),
+              import('./features/cards/cards.component').then((m) => m.CardsComponent),
           },
           {
             path: 'my-cards',
@@ -26,22 +26,22 @@ export const routes: Routes = [
                 path: '',
                 loadComponent: () =>
                   import('./features/cards/my-cards/my-cards.component').then(
-                    m => m.MyCardsComponent,
+                    (m) => m.MyCardsComponent
                   ),
               },
               {
                 path: 'create-set',
                 loadComponent: () =>
-                  import(
-                    './features/cards/my-cards/create-set/create-set.component'
-                  ).then(m => m.CreateSetComponent),
+                  import('./features/cards/my-cards/create-set/create-set.component').then(
+                    (m) => m.CreateSetComponent
+                  ),
               },
               {
                 path: ':setId',
                 loadComponent: () =>
-                  import(
-                    './features/cards/my-cards/set-detail/set-detail.component'
-                  ).then(m => m.SetDetailComponent),
+                  import('./features/cards/my-cards/set-detail/set-detail.component').then(
+                    (m) => m.SetDetailComponent
+                  ),
               },
             ],
           },
@@ -52,14 +52,14 @@ export const routes: Routes = [
                 path: '',
                 loadComponent: () =>
                   import('./features/cards/predefined/predefined.component').then(
-                    m => m.PredefinedComponent,
+                    (m) => m.PredefinedComponent
                   ),
               },
               {
                 path: ':deckId',
                 loadComponent: () =>
                   import('./features/cards/predefined/deck-detail/deck-detail.component').then(
-                    m => m.DeckDetailComponent,
+                    (m) => m.DeckDetailComponent
                   ),
               },
             ],
@@ -69,24 +69,22 @@ export const routes: Routes = [
       {
         path: 'add',
         loadComponent: () =>
-          import('./features/cards/add/add-card.component').then(m => m.AddCardComponent),
+          import('./features/cards/add/add-card.component').then((m) => m.AddCardComponent),
       },
       {
         path: 'review',
         loadComponent: () =>
-          import('./features/review/review.component').then(m => m.ReviewComponent),
+          import('./features/review/review.component').then((m) => m.ReviewComponent),
       },
       {
         path: 'dictionary',
         loadComponent: () =>
-          import('./features/dictionary/dictionary.component').then(
-            m => m.DictionaryComponent,
-          ),
+          import('./features/dictionary/dictionary.component').then((m) => m.DictionaryComponent),
       },
       {
         path: 'profile',
         loadComponent: () =>
-          import('./features/profile/profile.component').then(m => m.ProfileComponent),
+          import('./features/profile/profile.component').then((m) => m.ProfileComponent),
       },
       {
         path: '',

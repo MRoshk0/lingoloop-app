@@ -1,0 +1,94 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/navbar/cards/my-cards"></ion-back-button>
+    </ion-buttons>
+    <div class="title-row">
+      <span class="title">{{ set()?.name ?? 'My cards' }}</span>
+      <span class="count-badge">{{ set()?.cards?.length ?? 0 }} cards</span>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="play-section">
+    <ion-button expand="block" class="play-btn" (click)="play()">
+      <ion-icon slot="start" name="play-circle"></ion-icon>
+      Play
+    </ion-button>
+  </div>
+
+  @if ((set()?.cards ?? []).length > 0) {
+    <div class="card-list-wrap">
+      @for (card of set()?.cards ?? []; track card.id; let last = $last) {
+        @if (editingCardId() === card.id) {
+          <div class="card-row edit-row">
+            <div class="edit-inputs">
+              <ion-item class="edit-input">
+                <ion-input [(ngModel)]="editWord" placeholder="German word"></ion-input>
+              </ion-item>
+              <ion-item class="edit-input">
+                <ion-input [(ngModel)]="editTranslation" placeholder="Translation"></ion-input>
+              </ion-item>
+            </div>
+            <div class="edit-actions">
+              <ion-button fill="clear" class="action-btn confirm" (click)="saveEdit()">
+                <ion-icon name="checkmark-outline"></ion-icon>
+              </ion-button>
+              <ion-button fill="clear" class="action-btn cancel" (click)="cancelEdit()">
+                <ion-icon name="close-outline"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+        } @else {
+          <div class="card-row">
+            <span class="word">{{ card.word }}</span>
+            <span class="translation">{{ card.translation }}</span>
+            <ion-button
+              fill="clear"
+              class="action-btn edit"
+              (click)="startEdit(card.id, card.word, card.translation)"
+            >
+              <ion-icon name="create-outline"></ion-icon>
+            </ion-button>
+            <ion-button fill="clear" class="action-btn delete" (click)="removeCard(card.id)">
+              <ion-icon name="trash-outline"></ion-icon>
+            </ion-button>
+          </div>
+        }
+
+        @if (!last) {
+          <div class="divider"></div>
+        }
+      }
+    </div>
+  }
+
+  @if ((set()?.cards ?? []).length === 0 && !showForm()) {
+    <p class="empty-state">No cards yet. Add your first card!</p>
+  }
+
+  @if (showForm()) {
+    <div class="add-form">
+      <ion-item class="form-input">
+        <ion-input [(ngModel)]="word" placeholder="German word"></ion-input>
+      </ion-item>
+      <ion-item class="form-input">
+        <ion-input [(ngModel)]="translation" placeholder="Translation"></ion-input>
+      </ion-item>
+      <div class="form-actions">
+        <ion-button fill="outline" (click)="showForm.set(false)">Cancel</ion-button>
+        <ion-button [disabled]="!word().trim() || !translation().trim()" (click)="addCard()"
+          >Add</ion-button
+        >
+      </div>
+    </div>
+  }
+
+  <div class="add-area">
+    <ion-button expand="block" fill="outline" class="add-btn" (click)="showForm.set(true)">
+      <ion-icon slot="start" name="add-outline"></ion-icon>
+      Add Card
+    </ion-button>
+  </div>
+</ion-content>

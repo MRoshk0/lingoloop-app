@@ -1,9 +1,19 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Add Card</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
-  <p>Add Card feature coming soon...</p>
+  <div class="nav-grid">
+    <ion-card class="nav-card" button (click)="goTo('cards/my-cards')">
+      <ion-card-content>
+        <span class="nav-emoji">🃏</span>
+        <p class="nav-title">My Cards</p>
+        <p class="nav-subtitle">Your personal vocabulary</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card class="nav-card" button (click)="goTo('cards/predefined')">
+      <ion-card-content>
+        <span class="nav-emoji">📚</span>
+        <p class="nav-title">Predefined Sets</p>
+        <p class="nav-subtitle">Ready-made word sets</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
 </ion-content>

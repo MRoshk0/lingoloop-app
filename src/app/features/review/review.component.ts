@@ -1,11 +1,5 @@
 import { Component, signal, computed } from '@angular/core';
-import {
-  IonContent,
-  IonButton,
-  IonCard,
-  IonCardContent,
-  IonIcon,
-} from '@ionic/angular/standalone';
+import { IonContent, IonButton, IonCard, IonCardContent, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { playCircle } from 'ionicons/icons';
 import { MOCK_REVIEW_CARDS, MOCK_DECK_NAME, ReviewCard } from './review.mock';
@@ -36,14 +30,15 @@ export class ReviewComponent {
 
   currentCard = computed(() => this.cards[this.currentIndex()]);
   progress = computed(() => `${this.currentIndex() + 1} / ${this.cards.length}`);
+  progressPercent = computed(() => ((this.currentIndex() + 1) / this.cards.length) * 100);
 
   ratingCounts = computed(() => {
     const r = this.results();
     return {
-      again: r.filter(x => x.rating === 'again').length,
-      hard: r.filter(x => x.rating === 'hard').length,
-      good: r.filter(x => x.rating === 'good').length,
-      easy: r.filter(x => x.rating === 'easy').length,
+      again: r.filter((x) => x.rating === 'again').length,
+      hard: r.filter((x) => x.rating === 'hard').length,
+      good: r.filter((x) => x.rating === 'good').length,
+      easy: r.filter((x) => x.rating === 'easy').length,
     };
   });
 
@@ -63,7 +58,7 @@ export class ReviewComponent {
   }
 
   rate(rating: Rating) {
-    this.results.update(r => [...r, { card: this.currentCard(), rating }]);
+    this.results.update((r) => [...r, { card: this.currentCard(), rating }]);
     console.log(`[Review] card=${this.currentCard().id} rating=${rating}`);
 
     const next = this.currentIndex() + 1;

@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/navbar/cards/predefined"></ion-back-button>
+    </ion-buttons>
+    <div class="title-row">
+      <span class="title">{{ deck()?.title }}</span>
+      <span class="count-badge">{{ deck()?.cards?.length ?? 0 }} cards</span>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="play-section">
+    <ion-button expand="block" class="play-btn" (click)="play()">
+      <ion-icon slot="start" name="play-circle"></ion-icon>
+      Play
+    </ion-button>
+  </div>
+
+  @if ((deck()?.cards ?? []).length > 0) {
+    <div class="card-list-wrap">
+      @for (card of deck()?.cards ?? []; track card.word; let last = $last) {
+        <div class="card-row">
+          <span class="word">{{ card.word }}</span>
+          <span class="translation">{{ card.translation }}</span>
+        </div>
+        @if (!last) {
+          <div class="divider"></div>
+        }
+      }
+    </div>
+  }
+</ion-content>

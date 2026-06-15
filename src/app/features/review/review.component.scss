@@ -3,7 +3,7 @@
   flex-direction: column;
   align-items: stretch;
   min-height: 100%;
-  padding: 32px 16px 24px;
+  padding: 20px 16px 24px;
 }
 
 // ── Idle ──────────────────────────────────────────
@@ -52,29 +52,55 @@
 // ── Reviewing ─────────────────────────────────────
 
 .review-screen {
-  justify-content: flex-start;
-  gap: 20px;
+  justify-content: space-between;
+  gap: 16px;
+  flex: 1;
 }
 
-.progress {
-  text-align: center;
-  font-size: 13px;
-  font-weight: 600;
-  color: #b8a467;
-  margin: 0;
+.progress-bar-wrap {
+  padding: 0 4px;
+}
+
+.progress-bar-track {
+  height: 6px;
+  background: var(--app-surface-color);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--ion-color-primary);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.card-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .flashcard {
+  width: 100%;
   margin: 0;
-  min-height: 200px;
-  box-shadow: 0 4px 16px rgba(61, 46, 0, 0.1);
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(61, 46, 0, 0.12);
+  transition: transform 0.1s ease;
+
+  &:active {
+    transform: scale(0.98);
+  }
 
   ion-card-content {
-    padding: 32px 24px;
+    padding: 40px 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 24px;
+    gap: 20px;
+    min-height: 200px;
+    justify-content: center;
   }
 }
 
@@ -83,6 +109,12 @@
   font-weight: 700;
   color: var(--ion-text-color);
   text-align: center;
+  margin: 0;
+}
+
+.tap-hint {
+  font-size: 13px;
+  color: #b8a467;
   margin: 0;
 }
 
@@ -100,15 +132,6 @@
   margin: 0;
 }
 
-.show-btn {
-  --background: var(--ion-color-primary);
-  --color: var(--ion-color-primary-contrast);
-  --border-radius: var(--app-border-radius);
-  height: 52px;
-  font-size: 16px;
-  font-weight: 600;
-}
-
 .rating-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -120,10 +143,22 @@
     font-size: 13px;
     font-weight: 700;
 
-    &.again { --background: #f5a7a7; --color: #7a1f1f; }
-    &.hard  { --background: #f5d5a7; --color: #7a4a1f; }
-    &.good  { --background: #a7d5f5; --color: #1f4a7a; }
-    &.easy  { --background: #a7f5c4; --color: #1f7a45; }
+    &.again {
+      --background: #f5a7a7;
+      --color: #7a1f1f;
+    }
+    &.hard {
+      --background: #f5d5a7;
+      --color: #7a4a1f;
+    }
+    &.good {
+      --background: #a7d5f5;
+      --color: #1f4a7a;
+    }
+    &.easy {
+      --background: #a7f5c4;
+      --color: #1f7a45;
+    }
   }
 }
 
@@ -178,10 +213,18 @@
   height: 10px;
   border-radius: 50%;
 
-  &.again { background: #f5a7a7; }
-  &.hard  { background: #f5d5a7; }
-  &.good  { background: #a7d5f5; }
-  &.easy  { background: #a7f5c4; }
+  &.again {
+    background: #f5a7a7;
+  }
+  &.hard {
+    background: #f5d5a7;
+  }
+  &.good {
+    background: #a7d5f5;
+  }
+  &.easy {
+    background: #a7f5c4;
+  }
 }
 
 .summary-label {

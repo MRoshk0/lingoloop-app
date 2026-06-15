@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/navbar/cards"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Predefined Sets</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="sets-grid">
+    @for (set of sets; track set.id) {
+      <ion-card class="set-card" button (click)="openDeck(set.id)">
+        <ion-card-content>
+          <span class="set-emoji">{{ set.emoji }}</span>
+          <p class="set-title">{{ set.title }}</p>
+          <p class="set-count">{{ set.cards.length }} cards</p>
+        </ion-card-content>
+      </ion-card>
+    }
+  </div>
+</ion-content>

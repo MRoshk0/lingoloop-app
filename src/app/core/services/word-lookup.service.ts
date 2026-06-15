@@ -16,14 +16,14 @@ export class WordLookupService {
 
   constructor(private http: HttpClient) {
     this.http.get<WordEntry[]>('/assets/data/german-nouns.json').subscribe({
-      next: entries => {
+      next: (entries) => {
         for (const entry of entries) {
           this.index.set(entry.lemma.toLowerCase(), entry);
         }
         this.sortedLemmas = [...this.index.keys()].sort();
         this.isReady.set(true);
       },
-      error: err => console.error('[WordLookupService] Failed to load dictionary', err),
+      error: (err) => console.error('[WordLookupService] Failed to load dictionary', err),
     });
   }
 
