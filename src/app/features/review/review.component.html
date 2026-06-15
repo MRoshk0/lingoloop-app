@@ -1,9 +1,88 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Review</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
-  <p>Review feature coming soon...</p>
+
+  <!-- ── IDLE ── -->
+  @if (state() === 'idle') {
+    <div class="screen idle-screen">
+      <div class="idle-header">
+        <span class="deck-emoji">✈️</span>
+        <h1 class="deck-name">{{ deckName }}</h1>
+        <span class="due-badge">{{ cards.length }} cards due</span>
+      </div>
+
+      <ion-button expand="block" class="play-btn" (click)="start()">
+        <ion-icon slot="start" name="play-circle"></ion-icon>
+        Start Review
+      </ion-button>
+    </div>
+  }
+
+  <!-- ── REVIEWING ── -->
+  @if (state() === 'reviewing') {
+    <div class="screen review-screen">
+      <p class="progress">{{ progress() }}</p>
+
+      <ion-card class="flashcard">
+        <ion-card-content>
+          <p class="front-text">{{ currentCard().frontText }}</p>
+
+          @if (showAnswer()) {
+            <div class="divider"></div>
+            <p class="back-text">{{ currentCard().backText }}</p>
+          }
+        </ion-card-content>
+      </ion-card>
+
+      @if (!showAnswer()) {
+        <ion-button expand="block" class="show-btn" (click)="reveal()">
+          Show Answer
+        </ion-button>
+      } @else {
+        <div class="rating-grid">
+          <ion-button class="rating-btn again" (click)="rate('again')">Again</ion-button>
+          <ion-button class="rating-btn hard"  (click)="rate('hard')">Hard</ion-button>
+          <ion-button class="rating-btn good"  (click)="rate('good')">Good</ion-button>
+          <ion-button class="rating-btn easy"  (click)="rate('easy')">Easy</ion-button>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ── COMPLETE ── -->
+  @if (state() === 'complete') {
+    <div class="screen complete-screen">
+      <span class="complete-emoji">🎉</span>
+      <h1 class="complete-title">Session complete!</h1>
+      <p class="complete-sub">{{ results().length }} cards reviewed</p>
+
+      <ion-card class="summary-card">
+        <ion-card-content>
+          <div class="summary-row">
+            <span class="dot again"></span>
+            <span class="summary-label">Again</span>
+            <span class="summary-count">{{ ratingCounts().again }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="dot hard"></span>
+            <span class="summary-label">Hard</span>
+            <span class="summary-count">{{ ratingCounts().hard }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="dot good"></span>
+            <span class="summary-label">Good</span>
+            <span class="summary-count">{{ ratingCounts().good }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="dot easy"></span>
+            <span class="summary-label">Easy</span>
+            <span class="summary-count">{{ ratingCounts().easy }}</span>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-button expand="block" fill="outline" class="back-btn" (click)="restart()">
+        Back to Start
+      </ion-button>
+    </div>
+  }
+
 </ion-content>
