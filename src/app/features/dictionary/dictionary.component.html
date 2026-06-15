@@ -1,0 +1,45 @@
+<ion-content>
+  <div class="search-wrap">
+    <ion-searchbar
+      [value]="query()"
+      (ionInput)="onSearch($event)"
+      placeholder="Пошук слова..."
+      [debounce]="150"
+      animated
+    ></ion-searchbar>
+  </div>
+
+  @if (!isReady()) {
+    <div class="state-screen">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Завантаження словника…</p>
+    </div>
+  } @else if (!query().trim()) {
+    <div class="state-screen">
+      <span class="state-emoji">🔍</span>
+      <p>Почни вводити слово для пошуку</p>
+    </div>
+  } @else if (results().length === 0) {
+    <div class="state-screen">
+      <span class="state-emoji">😕</span>
+      <p>Нічого не знайдено</p>
+    </div>
+  } @else {
+    <div class="results-wrap">
+      @for (entry of results(); track entry.lemma; let last = $last) {
+        <div class="result-row">
+          <span class="article article--{{ entry.article }}">{{ entry.article }}</span>
+          <div class="word-col">
+            <span class="lemma">{{ entry.lemma }}</span>
+            @if (entry.plural) {
+              <span class="plural">Pl.: {{ entry.plural }}</span>
+            }
+          </div>
+        </div>
+        @if (!last) {
+          <div class="divider"></div>
+        }
+      }
+    </div>
+  }
+</ion-content>

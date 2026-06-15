@@ -52,6 +52,47 @@ On first injection the service loads the JSON asset via `HttpClient`,
 builds an in-memory `Map<lowercase, WordEntry>` + sorted array for O(log n)
 prefix search via binary search.
 
+## Word Search UI
+
+**Route:** `/navbar/dictionary` (tab: Dictionary, icon: search-outline)
+
+**Component:** `features/dictionary/dictionary.component`
+
+### Screen flow
+1. `ion-searchbar` at top — debounced 150 ms, updates `query` signal on each keystroke
+2. Results computed reactively: `computed(() => lookupService.search(query(), 20))`
+3. Results rendered as a rounded list container (`#F5E6C8` background) with dividers
+
+### States
+| State | Condition | Display |
+|---|---|---|
+| Loading | `isReady() === false` | Spinner + "Завантаження словника…" |
+| Idle | query empty | 🔍 "Почни вводити слово для пошуку" |
+| No results | query non-empty, 0 results | 😕 "Нічого не знайдено" |
+| Results | query non-empty, N results | List of up to 20 entries |
+
+### Result item layout
+```
+[der]  Apfel
+       Pl.: Äpfel
+```
+Article shown as a colored badge; lemma bold; plural secondary text.
+
+### Article color convention
+
+Standard used in German learning apps (e.g. Der Die Das app).
+Defined as CSS custom properties in `src/theme/variables.scss`:
+
+```scss
+--article-der: #1565C0;   /* blue  */
+--article-die: #C62828;   /* red   */
+--article-das: #2E7D32;   /* green */
+```
+
+Reuse these variables in Add Card autosuggest and any future article-aware UI.
+
+---
+
 ## Phase 1 vs Phase 2
 
 | | Phase 1 (current) | Phase 2 (future) |

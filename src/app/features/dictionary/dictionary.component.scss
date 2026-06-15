@@ -1,0 +1,81 @@
+.search-wrap {
+  padding: 12px 8px 4px;
+}
+
+// ── State screens ─────────────────────────────────
+
+.state-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 64px 24px;
+  color: #b8a467;
+  font-size: 15px;
+  text-align: center;
+
+  ion-spinner {
+    color: var(--ion-color-primary);
+    width: 36px;
+    height: 36px;
+  }
+}
+
+.state-emoji {
+  font-size: 40px;
+}
+
+// ── Results list ──────────────────────────────────
+
+.results-wrap {
+  margin: 4px 16px 16px;
+  background: var(--app-surface-color);
+  border-radius: var(--app-border-radius);
+  overflow: hidden;
+}
+
+.result-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 16px;
+}
+
+.article {
+  flex-shrink: 0;
+  width: 36px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  padding: 3px 0;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.6);
+
+  &--der { color: var(--article-der); }
+  &--die { color: var(--article-die); }
+  &--das { color: var(--article-das); }
+}
+
+.word-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.lemma {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ion-text-color);
+}
+
+.plural {
+  font-size: 12px;
+  color: #b8a467;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(61, 46, 0, 0.07);
+  margin: 0 16px;
+}
