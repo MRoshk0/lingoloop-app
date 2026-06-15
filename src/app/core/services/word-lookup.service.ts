@@ -54,4 +54,15 @@ export class WordLookupService {
   lookup(lemma: string): WordEntry | undefined {
     return this.index.get(lemma.toLowerCase());
   }
+
+  /** Returns `count` unique random entries. Uses partial Fisher-Yates — O(count). */
+  getRandomWords(count: number): WordEntry[] {
+    const all = [...this.index.values()];
+    const n = Math.min(count, all.length);
+    for (let i = 0; i < n; i++) {
+      const j = i + Math.floor(Math.random() * (all.length - i));
+      [all[i], all[j]] = [all[j], all[i]];
+    }
+    return all.slice(0, n);
+  }
 }

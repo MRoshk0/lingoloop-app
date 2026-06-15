@@ -82,6 +82,13 @@ export const routes: Routes = [
           import('./features/dictionary/dictionary.component').then((m) => m.DictionaryComponent),
       },
       {
+        path: 'game',
+        loadComponent: () =>
+          import('./features/article-game/article-game.component').then(
+            (m) => m.ArticleGameComponent
+          ),
+      },
+      {
         path: 'profile',
         loadComponent: () =>
           import('./features/profile/profile.component').then((m) => m.ProfileComponent),

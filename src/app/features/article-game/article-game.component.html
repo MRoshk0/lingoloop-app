@@ -1,0 +1,105 @@
+<ion-content>
+  @if (gameState() === 'setup') {
+    <div class="screen setup-screen">
+      <div class="setup-header">
+        <ion-icon name="game-controller-outline" class="game-icon"></ion-icon>
+        <h1 class="setup-title">Article Game</h1>
+        <p class="setup-sub">Tap the correct article — der, die, or das</p>
+      </div>
+
+      <div class="setup-card">
+        <p class="preset-label">Number of words</p>
+        <div class="preset-grid">
+          @for (n of presets; track n) {
+            <button
+              class="preset-btn"
+              [class.is-active]="wordCount() === n"
+              (click)="wordCount.set(n)"
+            >
+              {{ n }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <button class="start-btn" [disabled]="!isReady()" (click)="startGame()">
+        {{ isReady() ? 'Start Game' : 'Loading dictionary…' }}
+      </button>
+    </div>
+  }
+
+  @if (gameState() === 'playing') {
+    @let word = currentWord();
+    @let answered = answerState() !== null;
+    @let wrongAnswer = answered && !answerState()!.correct;
+
+    <div class="screen playing-screen">
+      <div class="progress-row">
+        <span class="progress-text">{{ progress() }}</span>
+        <div class="progress-track">
+          <div class="progress-fill" [style.width.%]="progressPercent()"></div>
+        </div>
+      </div>
+
+      <div class="word-area">
+        <p class="word-lemma">{{ word.lemma }}</p>
+        @if (wrongAnswer && word.plural) {
+          <p class="word-plural">Pl.: {{ word.plural }}</p>
+        }
+      </div>
+
+      <div class="article-btns">
+        @for (article of articles; track article) {
+          <button
+            class="art-btn art-btn--{{ article }}"
+            [class.is-correct]="getButtonCorrect(article)"
+            [class.is-wrong]="getButtonWrong(article)"
+            [disabled]="answered"
+            (click)="choose(article)"
+          >
+            {{ article }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+
+  @if (gameState() === 'summary') {
+    <div class="screen summary-screen">
+      <div class="summary-header">
+        <ion-icon name="trophy-outline" class="trophy-icon"></ion-icon>
+        <p class="score-text">{{ score() }} / {{ words().length }}</p>
+        <p class="score-sub">
+          {{ score() === words().length ? 'Perfect score!' : 'Keep practising!' }}
+        </p>
+      </div>
+
+      @if (mistakes().length > 0) {
+        <div class="mistakes-wrap">
+          <p class="mistakes-label">Mistakes</p>
+          @for (word of mistakes(); track word.lemma; let last = $last) {
+            <div class="mistake-item">
+              <span class="mistake-article article--{{ word.article }}">{{ word.article }}</span>
+              <div class="mistake-word-col">
+                <span class="mistake-lemma">{{ word.lemma }}</span>
+                @if (word.plural) {
+                  <span class="mistake-plural">Pl.: {{ word.plural }}</span>
+                }
+              </div>
+            </div>
+            @if (!last) {
+              <div class="divider"></div>
+            }
+          }
+        </div>
+      }
+
+      <div class="summary-btns">
+        <button class="action-btn action-btn--primary" (click)="playAgain()">Play Again</button>
+        <button class="action-btn action-btn--outline" (click)="changeSettings()">
+          Change Settings
+        </button>
+      </div>
+    </div>
+  }
+</ion-content>

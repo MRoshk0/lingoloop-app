@@ -1,0 +1,350 @@
+.screen {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 24px 16px 40px;
+}
+
+// ── Setup ─────────────────────────────────────────────
+
+.setup-screen {
+  gap: 32px;
+  align-items: center;
+  justify-content: center;
+}
+
+.setup-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.game-icon {
+  font-size: 56px;
+  color: var(--ion-color-primary);
+}
+
+.setup-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+  margin: 0;
+}
+
+.setup-sub {
+  font-size: 14px;
+  color: #b8a467;
+  margin: 0;
+  text-align: center;
+}
+
+.setup-card {
+  background: var(--app-surface-color);
+  border-radius: var(--app-border-radius);
+  padding: 20px;
+  width: 100%;
+}
+
+.preset-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #b8a467;
+  margin: 0 0 12px;
+}
+
+.preset-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.preset-btn {
+  height: 52px;
+  border-radius: var(--app-border-radius);
+  border: 2px solid rgba(61, 46, 0, 0.1);
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+
+  &.is-active {
+    background: var(--ion-color-primary);
+    border-color: var(--ion-color-primary);
+    color: var(--ion-color-primary-contrast);
+  }
+}
+
+.start-btn {
+  width: 100%;
+  height: 56px;
+  border-radius: var(--app-border-radius);
+  border: none;
+  background: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+}
+
+// ── Playing ───────────────────────────────────────────
+
+.playing-screen {
+  gap: 24px;
+  justify-content: space-between;
+}
+
+.progress-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.progress-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #b8a467;
+  align-self: flex-end;
+}
+
+.progress-track {
+  height: 6px;
+  background: var(--app-surface-color);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--ion-color-primary);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.word-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.word-lemma {
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+  text-align: center;
+  margin: 0;
+}
+
+.word-plural {
+  font-size: 16px;
+  color: #b8a467;
+  margin: 0;
+  animation: fade-in 0.2s ease;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.article-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.art-btn {
+  height: 64px;
+  border-radius: var(--app-border-radius);
+  border: 2px solid;
+  background: var(--app-surface-color);
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+
+  &--der {
+    color: var(--article-der);
+    border-color: var(--article-der);
+  }
+  &--die {
+    color: var(--article-die);
+    border-color: var(--article-die);
+  }
+  &--das {
+    color: var(--article-das);
+    border-color: var(--article-das);
+  }
+
+  &.is-correct {
+    background: var(--article-das); // green
+    border-color: var(--article-das);
+    color: white;
+  }
+
+  &.is-wrong {
+    background: var(--article-die); // red
+    border-color: var(--article-die);
+    color: white;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  // keep answered buttons fully visible
+  &.is-correct:disabled,
+  &.is-wrong:disabled {
+    opacity: 1;
+  }
+}
+
+// ── Summary ───────────────────────────────────────────
+
+.summary-screen {
+  gap: 24px;
+}
+
+.summary-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 0 4px;
+}
+
+.trophy-icon {
+  font-size: 56px;
+  color: var(--ion-color-primary);
+}
+
+.score-text {
+  font-size: 44px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+  margin: 0;
+}
+
+.score-sub {
+  font-size: 16px;
+  color: #b8a467;
+  margin: 0;
+}
+
+.mistakes-wrap {
+  background: var(--app-surface-color);
+  border-radius: var(--app-border-radius);
+  padding: 16px;
+}
+
+.mistakes-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #b8a467;
+  margin: 0 0 10px;
+}
+
+.mistake-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+}
+
+.mistake-article {
+  flex-shrink: 0;
+  width: 36px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  padding: 3px 0;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.6);
+
+  &.article--der {
+    color: var(--article-der);
+  }
+  &.article--die {
+    color: var(--article-die);
+  }
+  &.article--das {
+    color: var(--article-das);
+  }
+}
+
+.mistake-word-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mistake-lemma {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ion-text-color);
+}
+
+.mistake-plural {
+  font-size: 12px;
+  color: #b8a467;
+}
+
+.divider {
+  height: 1px;
+  background: rgba(61, 46, 0, 0.07);
+}
+
+.summary-btns {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: auto;
+}
+
+.action-btn {
+  height: 52px;
+  border-radius: var(--app-border-radius);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+
+  &--primary {
+    background: var(--ion-color-primary);
+    border: none;
+    color: var(--ion-color-primary-contrast);
+  }
+
+  &--outline {
+    background: transparent;
+    border: 2px solid var(--ion-color-primary);
+    color: var(--ion-text-color);
+  }
+}
