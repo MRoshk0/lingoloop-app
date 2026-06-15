@@ -1,0 +1,230 @@
+.page {
+  padding: 16px 16px 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.section-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #b8a467;
+  margin: 0 0 10px 4px;
+}
+
+// ── Username ──────────────────────────────────────────
+
+.username-card {
+  background: var(--app-surface-color);
+  border-radius: var(--app-border-radius);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.username-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.username-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.name-input {
+  flex: 1;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--ion-color-primary);
+  outline: none;
+  font-family: inherit;
+  padding: 2px 0;
+  min-width: 0;
+}
+
+.edit-btn {
+  background: none;
+  border: none;
+  color: #b8a467;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+// ── Streak ────────────────────────────────────────────
+
+.streak-card {
+  background: var(--app-surface-color);
+  border-radius: var(--app-border-radius);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.streak-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.flame-icon {
+  font-size: 28px;
+  color: #f57c00;
+}
+
+.streak-num {
+  font-size: 38px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+  line-height: 1;
+
+  &--muted {
+    font-size: 30px;
+    color: #b8a467;
+  }
+}
+
+.streak-sub {
+  font-size: 12px;
+  font-weight: 600;
+  color: #b8a467;
+}
+
+.streak-divider {
+  width: 1px;
+  height: 52px;
+  background: rgba(61, 46, 0, 0.1);
+  margin: 0 16px;
+}
+
+// ── Daily goal ────────────────────────────────────────
+
+.goal-card {
+  background: var(--app-surface-color);
+  border-radius: var(--app-border-radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.goal-presets {
+  display: flex;
+  gap: 10px;
+}
+
+.preset-btn {
+  flex: 1;
+  height: 44px;
+  border-radius: var(--app-border-radius);
+  border: 2px solid rgba(61, 46, 0, 0.1);
+  background: rgba(255, 255, 255, 0.7);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+
+  &.is-active {
+    background: var(--ion-color-primary);
+    border-color: var(--ion-color-primary);
+    color: var(--ion-color-primary-contrast);
+  }
+}
+
+.goal-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.goal-bar-track {
+  height: 8px;
+  background: rgba(61, 46, 0, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.goal-bar-fill {
+  height: 100%;
+  background: var(--ion-color-primary);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+  min-width: 0;
+}
+
+.goal-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #b8a467;
+  align-self: flex-end;
+}
+
+// ── Stats ─────────────────────────────────────────────
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.stat-card {
+  background: var(--app-surface-color);
+  border-radius: var(--app-border-radius);
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-val {
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+  line-height: 1;
+
+  &--muted {
+    color: #b8a467;
+  }
+}
+
+.stat-key {
+  font-size: 12px;
+  font-weight: 600;
+  color: #b8a467;
+}

@@ -6,7 +6,7 @@ import {
   refreshCircleOutline,
   searchOutline,
   gameControllerOutline,
-  personOutline,
+  personCircleOutline,
 } from 'ionicons/icons';
 
 @Component({
@@ -23,7 +23,7 @@ export class NavbarComponent {
       refreshCircleOutline,
       searchOutline,
       gameControllerOutline,
-      personOutline,
+      personCircleOutline,
     });
   }
 }

@@ -1,3 +1,100 @@
-<ion-content class="ion-padding">
-  <p>Profile coming soon...</p>
+<ion-content>
+  <div class="page">
+    <!-- Username -->
+    <div class="section">
+      <p class="section-label">Profile</p>
+      <div class="username-card">
+        <div class="avatar">{{ initial() }}</div>
+        <div class="username-wrap">
+          @if (isEditingName()) {
+            <input
+              #nameInput
+              class="name-input"
+              type="text"
+              [value]="username()"
+              (blur)="saveName(nameInput.value)"
+              (keydown.enter)="nameInput.blur()"
+            />
+          } @else {
+            <span class="username-text" (click)="startEdit()">{{ username() }}</span>
+            <button class="edit-btn" (click)="startEdit()">
+              <ion-icon name="pencil-outline"></ion-icon>
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Streak -->
+    <div class="section">
+      <p class="section-label">Streak</p>
+      <div class="streak-card">
+        <div class="streak-block">
+          <ion-icon name="flame" class="flame-icon"></ion-icon>
+          <span class="streak-num">{{ currentStreak() }}</span>
+          <span class="streak-sub">day streak</span>
+        </div>
+        <div class="streak-divider"></div>
+        <div class="streak-block">
+          <span class="streak-num streak-num--muted">{{ longestStreak() }}</span>
+          <span class="streak-sub">longest</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daily goal -->
+    <div class="section">
+      <p class="section-label">Daily Goal</p>
+      <div class="goal-card">
+        <div class="goal-presets">
+          @for (n of goalPresets; track n) {
+            <button class="preset-btn" [class.is-active]="dailyGoal() === n" (click)="setGoal(n)">
+              {{ n }}
+            </button>
+          }
+        </div>
+        <div class="goal-bar-wrap">
+          <div class="goal-bar-track">
+            <div class="goal-bar-fill" [style.width.%]="goalPercent()"></div>
+          </div>
+          <span class="goal-label">{{ todayTotal() }} / {{ dailyGoal() }} words today</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="section">
+      <p class="section-label">Stats</p>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-val">{{ gamesPlayed() }}</span>
+          <span class="stat-key">Games played</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-val">{{ (avgAccuracy() * 100).toFixed(0) }}%</span>
+          <span class="stat-key">Avg accuracy</span>
+        </div>
+        <div class="stat-card">
+          @if (apiLoading()) {
+            <span class="stat-val stat-val--muted">…</span>
+          } @else if (apiError()) {
+            <span class="stat-val stat-val--muted">—</span>
+          } @else {
+            <span class="stat-val">{{ apiStats().decks }}</span>
+          }
+          <span class="stat-key">Decks</span>
+        </div>
+        <div class="stat-card">
+          @if (apiLoading()) {
+            <span class="stat-val stat-val--muted">…</span>
+          } @else if (apiError()) {
+            <span class="stat-val stat-val--muted">—</span>
+          } @else {
+            <span class="stat-val">{{ apiStats().cards }}</span>
+          }
+          <span class="stat-key">Total cards</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </ion-content>

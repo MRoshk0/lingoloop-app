@@ -3,6 +3,7 @@ import { IonContent, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { gameControllerOutline, trophyOutline } from 'ionicons/icons';
 import { WordLookupService, WordEntry } from '../../core/services/word-lookup.service';
+import { ActivityLogService } from '../../core/services/activity-log.service';
 
 type GameState = 'setup' | 'playing' | 'summary';
 type Article = 'der' | 'die' | 'das';
@@ -27,6 +28,7 @@ interface GameResult {
 })
 export class ArticleGameComponent implements OnDestroy {
   private lookupService = inject(WordLookupService);
+  private activityLog = inject(ActivityLogService);
 
   readonly presets = [10, 20, 30, 50] as const;
   readonly articles: Article[] = ['der', 'die', 'das'];
@@ -103,6 +105,12 @@ export class ArticleGameComponent implements OnDestroy {
     this.autoAdvanceTimer = null;
     const next = this.currentIndex() + 1;
     if (next >= this.words().length) {
+      this.activityLog.logActivity({
+        date: this.activityLog.today(),
+        type: 'article-game',
+        score: this.score(),
+        total: this.words().length,
+      });
       this.gameState.set('summary');
     } else {
       this.currentIndex.set(next);
