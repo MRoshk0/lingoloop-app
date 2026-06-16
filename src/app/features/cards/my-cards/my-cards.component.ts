@@ -40,6 +40,7 @@ export class MyCardsComponent {
 
   constructor() {
     addIcons({ addOutline });
+    this.cardsService.loadDecks().subscribe();
   }
 
   get sets() {
@@ -50,7 +51,7 @@ export class MyCardsComponent {
     this.router.navigateByUrl('/navbar/cards/my-cards/create-set');
   }
 
-  openSet(id: number) {
+  openSet(id: string) {
     this.router.navigateByUrl(`/navbar/cards/my-cards/${id}`);
   }
 }

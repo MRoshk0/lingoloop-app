@@ -25,10 +25,10 @@
           <div class="card-row edit-row">
             <div class="edit-inputs">
               <ion-item class="edit-input">
-                <ion-input [(ngModel)]="editWord" placeholder="German word"></ion-input>
+                <ion-input [(ngModel)]="editFrontText" placeholder="German word"></ion-input>
               </ion-item>
               <ion-item class="edit-input">
-                <ion-input [(ngModel)]="editTranslation" placeholder="Translation"></ion-input>
+                <ion-input [(ngModel)]="editBackText" placeholder="Translation"></ion-input>
               </ion-item>
             </div>
             <div class="edit-actions">
@@ -42,12 +42,12 @@
           </div>
         } @else {
           <div class="card-row">
-            <span class="word">{{ card.word }}</span>
-            <span class="translation">{{ card.translation }}</span>
+            <span class="word">{{ card.frontText }}</span>
+            <span class="translation">{{ card.backText }}</span>
             <ion-button
               fill="clear"
               class="action-btn edit"
-              (click)="startEdit(card.id, card.word, card.translation)"
+              (click)="startEdit(card.id, card.frontText, card.backText)"
             >
               <ion-icon name="create-outline"></ion-icon>
             </ion-button>
@@ -71,14 +71,14 @@
   @if (showForm()) {
     <div class="add-form">
       <ion-item class="form-input">
-        <ion-input [(ngModel)]="word" placeholder="German word"></ion-input>
+        <ion-input [(ngModel)]="frontText" placeholder="German word"></ion-input>
       </ion-item>
       <ion-item class="form-input">
-        <ion-input [(ngModel)]="translation" placeholder="Translation"></ion-input>
+        <ion-input [(ngModel)]="backText" placeholder="Translation"></ion-input>
       </ion-item>
       <div class="form-actions">
         <ion-button fill="outline" (click)="showForm.set(false)">Cancel</ion-button>
-        <ion-button [disabled]="!word().trim() || !translation().trim()" (click)="addCard()"
+        <ion-button [disabled]="!frontText().trim() || !backText().trim()" (click)="addCard()"
           >Add</ion-button
         >
       </div>

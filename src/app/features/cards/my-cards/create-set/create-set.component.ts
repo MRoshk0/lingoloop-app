@@ -40,7 +40,8 @@ export class CreateSetComponent {
   submit() {
     const trimmed = this.name().trim();
     if (!trimmed) return;
-    const set = this.cardsService.createSet(trimmed);
-    this.router.navigateByUrl(`/navbar/cards/my-cards/${set.id}`, { replaceUrl: true });
+    this.cardsService.createSet(trimmed).subscribe((set) => {
+      this.router.navigateByUrl(`/navbar/cards/my-cards/${set.id}`, { replaceUrl: true });
+    });
   }
 }

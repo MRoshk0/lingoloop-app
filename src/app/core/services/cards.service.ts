@@ -1,55 +1,119 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 export interface Card {
-  id: number;
-  word: string;
-  translation: string;
+  id: string;
+  frontText: string;
+  backText: string;
+  deckId: string | null;
 }
 
 export interface CardSet {
-  id: number;
+  id: string;
   name: string;
+  description?: string | null;
+  readOnly?: boolean;
   cards: Card[];
+}
+
+interface DeckResponse {
+  id: string;
+  name: string;
+  description: string | null;
+  readOnly: boolean;
+  cards: CardResponse[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface CardResponse {
+  id: string;
+  frontText: string;
+  backText: string;
+  deckId: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+function toCard(c: CardResponse): Card {
+  return { id: c.id, frontText: c.frontText, backText: c.backText, deckId: c.deckId };
+}
+
+function toDeck(d: DeckResponse): CardSet {
+  return {
+    id: d.id,
+    name: d.name,
+    description: d.description,
+    readOnly: d.readOnly,
+    cards: d.cards.map(toCard),
+  };
 }
 
 @Injectable({ providedIn: 'root' })
 export class CardsService {
-  private nextSetId = 1;
-  private nextCardId = 1;
+  private http = inject(HttpClient);
+  private readonly base = environment.apiUrl;
 
   cardSets = signal<CardSet[]>([]);
 
-  createSet(name: string): CardSet {
-    const newSet: CardSet = { id: this.nextSetId++, name, cards: [] };
-    this.cardSets.update((sets) => [...sets, newSet]);
-    return newSet;
+  loadDecks(): Observable<CardSet[]> {
+    return this.http.get<DeckResponse[]>(`${this.base}/api/decks`).pipe(
+      map((decks) => decks.map(toDeck)),
+      tap((sets) => this.cardSets.set(sets))
+    );
   }
 
-  getSet(id: number): CardSet | undefined {
+  createSet(name: string): Observable<CardSet> {
+    return this.http.post<DeckResponse>(`${this.base}/api/decks`, { name }).pipe(
+      map(toDeck),
+      tap((set) => this.cardSets.update((sets) => [...sets, set]))
+    );
+  }
+
+  getSet(id: string): CardSet | undefined {
     return this.cardSets().find((s) => s.id === id);
   }
 
-  addCard(setId: number, word: string, translation: string): void {
-    const card: Card = { id: this.nextCardId++, word, translation };
-    this.cardSets.update((sets) =>
-      sets.map((s) => (s.id === setId ? { ...s, cards: [...s.cards, card] } : s))
-    );
+  addCard(deckId: string, frontText: string, backText: string): Observable<Card> {
+    return this.http
+      .post<CardResponse>(`${this.base}/api/cards`, { frontText, backText, deckId })
+      .pipe(
+        map(toCard),
+        tap((card) =>
+          this.cardSets.update((sets) =>
+            sets.map((s) => (s.id === deckId ? { ...s, cards: [...s.cards, card] } : s))
+          )
+        )
+      );
   }
 
-  updateCard(setId: number, cardId: number, word: string, translation: string): void {
+  removeCard(deckId: string, cardId: string): Observable<void> {
+    return this.http
+      .delete<void>(`${this.base}/api/cards/${cardId}`)
+      .pipe(
+        tap(() =>
+          this.cardSets.update((sets) =>
+            sets.map((s) =>
+              s.id === deckId ? { ...s, cards: s.cards.filter((c) => c.id !== cardId) } : s
+            )
+          )
+        )
+      );
+  }
+
+  // TODO: replace with PUT /api/cards/:id once the endpoint is available
+  updateCard(deckId: string, cardId: string, frontText: string, backText: string): void {
     this.cardSets.update((sets) =>
       sets.map((s) =>
-        s.id === setId
-          ? { ...s, cards: s.cards.map((c) => (c.id === cardId ? { ...c, word, translation } : c)) }
+        s.id === deckId
+          ? {
+              ...s,
+              cards: s.cards.map((c) => (c.id === cardId ? { ...c, frontText, backText } : c)),
+            }
           : s
-      )
-    );
-  }
-
-  removeCard(setId: number, cardId: number): void {
-    this.cardSets.update((sets) =>
-      sets.map((s) =>
-        s.id === setId ? { ...s, cards: s.cards.filter((c) => c.id !== cardId) } : s
       )
     );
   }

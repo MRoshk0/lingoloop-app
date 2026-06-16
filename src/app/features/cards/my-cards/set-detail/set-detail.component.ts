@@ -46,18 +46,18 @@ export class SetDetailComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
-  setId = Number(this.route.snapshot.paramMap.get('setId'));
+  setId = this.route.snapshot.paramMap.get('setId') ?? '';
   set = computed(() => this.cardsService.getSet(this.setId));
 
   // Add form
-  word = signal('');
-  translation = signal('');
+  frontText = signal('');
+  backText = signal('');
   showForm = signal(false);
 
   // Edit state
-  editingCardId = signal<number | null>(null);
-  editWord = signal('');
-  editTranslation = signal('');
+  editingCardId = signal<string | null>(null);
+  editFrontText = signal('');
+  editBackText = signal('');
 
   constructor() {
     addIcons({
@@ -71,27 +71,31 @@ export class SetDetailComponent {
   }
 
   addCard() {
-    const w = this.word().trim();
-    const t = this.translation().trim();
-    if (!w || !t) return;
-    this.cardsService.addCard(this.setId, w, t);
-    this.word.set('');
-    this.translation.set('');
-    this.showForm.set(false);
+    const front = this.frontText().trim();
+    const back = this.backText().trim();
+    if (!front || !back) return;
+    this.cardsService.addCard(this.setId, front, back).subscribe({
+      next: () => {
+        this.frontText.set('');
+        this.backText.set('');
+        this.showForm.set(false);
+      },
+      error: (err) => console.error('Failed to add card', err),
+    });
   }
 
-  startEdit(cardId: number, word: string, translation: string) {
+  startEdit(cardId: string, frontText: string, backText: string) {
     this.editingCardId.set(cardId);
-    this.editWord.set(word);
-    this.editTranslation.set(translation);
+    this.editFrontText.set(frontText);
+    this.editBackText.set(backText);
   }
 
   saveEdit() {
     const id = this.editingCardId();
-    const w = this.editWord().trim();
-    const t = this.editTranslation().trim();
-    if (id !== null && w && t) {
-      this.cardsService.updateCard(this.setId, id, w, t);
+    const front = this.editFrontText().trim();
+    const back = this.editBackText().trim();
+    if (id !== null && front && back) {
+      this.cardsService.updateCard(this.setId, id, front, back);
     }
     this.editingCardId.set(null);
   }
@@ -104,7 +108,9 @@ export class SetDetailComponent {
     this.router.navigateByUrl('/navbar/review');
   }
 
-  removeCard(cardId: number) {
-    this.cardsService.removeCard(this.setId, cardId);
+  removeCard(cardId: string) {
+    this.cardsService.removeCard(this.setId, cardId).subscribe({
+      error: (err) => console.error('Failed to remove card', err),
+    });
   }
 }
