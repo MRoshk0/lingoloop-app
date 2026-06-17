@@ -11,6 +11,7 @@ import {
   IonInput,
   IonButton,
   IonIcon,
+  ModalController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -20,8 +21,11 @@ import {
   createOutline,
   checkmarkOutline,
   closeOutline,
+  cameraOutline,
 } from 'ionicons/icons';
 import { CardsService } from '../../../../core/services/cards.service';
+import { PhotoCardService } from '../../../../core/services/photo-card.service';
+import { PhotoCardsModalComponent } from './photo-cards-modal/photo-cards-modal.component';
 
 @Component({
   selector: 'app-set-detail',
@@ -45,6 +49,8 @@ export class SetDetailComponent {
   cardsService = inject(CardsService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private photoCardService = inject(PhotoCardService);
+  private modalController = inject(ModalController);
 
   setId = this.route.snapshot.paramMap.get('setId') ?? '';
   set = computed(() => this.cardsService.getSet(this.setId));
@@ -64,6 +70,9 @@ export class SetDetailComponent {
   editFrontText = signal('');
   editBackText = signal('');
 
+  // Photo flow
+  photoLoading = signal(false);
+
   constructor() {
     addIcons({
       trashOutline,
@@ -72,6 +81,7 @@ export class SetDetailComponent {
       createOutline,
       checkmarkOutline,
       closeOutline,
+      cameraOutline,
     });
     if (!this.cardsService.getSet(this.setId)) {
       this.cardsService.loadDecks().subscribe();
@@ -148,5 +158,23 @@ export class SetDetailComponent {
     this.cardsService.removeCard(this.setId, cardId).subscribe({
       error: (err) => console.error('Failed to remove card', err),
     });
+  }
+
+  async openPhotoFlow() {
+    this.photoLoading.set(true);
+    try {
+      const cards = await this.photoCardService.pickAndExtract();
+      if (cards.length === 0) return;
+      const modal = await this.modalController.create({
+        component: PhotoCardsModalComponent,
+        componentProps: { extractedCards: cards, deckId: this.setId },
+      });
+      await modal.present();
+      await modal.onWillDismiss();
+    } catch (err) {
+      console.error('Photo extraction failed', err);
+    } finally {
+      this.photoLoading.set(false);
+    }
   }
 }

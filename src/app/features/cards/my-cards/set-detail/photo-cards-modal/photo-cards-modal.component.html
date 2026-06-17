@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Cards found
+      @if (!done()) {
+        <span class="count-badge">{{ extractedCards.length }}</span>
+      }
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="dismiss()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (!done()) {
+    <ion-list>
+      @for (card of extractedCards; track $index) {
+        <ion-item button (click)="toggleCard($index)">
+          <ion-checkbox slot="start" [checked]="isSelected($index)" (ionChange)="toggleCard($index)"></ion-checkbox>
+          <ion-label>
+            <span class="front">{{ card.front }}</span>
+            <span class="arrow"> → </span>
+            <span class="back">{{ card.back }}</span>
+          </ion-label>
+        </ion-item>
+      }
+    </ion-list>
+  } @else {
+    <div class="success-screen">
+      <span class="success-icon">✓</span>
+      <p class="success-text">{{ savedCount() }} cards added!</p>
+    </div>
+  }
+</ion-content>
+
+@if (!done()) {
+  <ion-footer>
+    <ion-toolbar>
+      <ion-button
+        expand="block"
+        class="confirm-btn"
+        [disabled]="selected().size === 0 || saving()"
+        (click)="confirm()"
+      >
+        @if (saving()) {
+          <ion-spinner name="crescent"></ion-spinner>
+        } @else {
+          Add {{ selected().size }} selected
+        }
+      </ion-button>
+    </ion-toolbar>
+  </ion-footer>
+} @else {
+  <ion-footer>
+    <ion-toolbar>
+      <ion-button expand="block" class="confirm-btn" (click)="close()">Done</ion-button>
+    </ion-toolbar>
+  </ion-footer>
+}

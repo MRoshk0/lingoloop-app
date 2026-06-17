@@ -110,5 +110,15 @@
       <ion-icon slot="start" name="add-outline"></ion-icon>
       Add Card
     </ion-button>
+    <ion-button
+      expand="block"
+      fill="outline"
+      class="add-btn"
+      [disabled]="photoLoading()"
+      (click)="openPhotoFlow()"
+    >
+      <ion-icon slot="start" name="camera-outline"></ion-icon>
+      {{ photoLoading() ? 'Scanning...' : 'Add from Photo' }}
+    </ion-button>
   </div>
 </ion-content>

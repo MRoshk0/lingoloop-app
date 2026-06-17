@@ -1,0 +1,62 @@
+ion-toolbar {
+  padding: 0 8px;
+}
+
+.count-badge {
+  display: inline-block;
+  background: var(--app-surface-color);
+  color: #b8a467;
+  border-radius: 20px;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+ion-item {
+  --padding-start: 16px;
+}
+
+.front {
+  font-weight: 600;
+  color: var(--ion-text-color);
+  font-size: 15px;
+}
+
+.arrow {
+  color: #b8a467;
+  font-size: 13px;
+}
+
+.back {
+  color: #b8a467;
+  font-size: 14px;
+}
+
+.success-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 16px;
+  padding: 40px;
+}
+
+.success-icon {
+  font-size: 56px;
+  color: var(--ion-color-secondary);
+}
+
+.success-text {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+  margin: 0;
+}
+
+.confirm-btn {
+  margin: 8px 16px;
+  --border-radius: var(--app-border-radius);
+}

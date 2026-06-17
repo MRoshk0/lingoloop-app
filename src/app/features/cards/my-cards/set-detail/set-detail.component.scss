@@ -169,6 +169,9 @@
 
 .add-area {
   padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 
   .add-btn {
     --border-radius: var(--app-border-radius);
