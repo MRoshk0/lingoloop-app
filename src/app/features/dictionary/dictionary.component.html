@@ -44,10 +44,7 @@
         </div>
       }
       @for (entry of mergedResults(); track entry.word + (entry.article ?? ''); let last = $last) {
-        @let expanded = expandedLemma() === entry.word;
-        @let tState = translations()[entry.word];
-
-        <div class="result-item" (click)="toggleEntry(entry.word, entry.article)">
+        <div class="result-item" (click)="navigateToWord(entry)">
           <div class="result-row">
             @if (entry.article) {
               <span class="article article--{{ entry.article }}">{{ entry.article }}</span>
@@ -60,22 +57,6 @@
                 <span class="plural">Pl.: {{ entry.plural }}</span>
               } @else if (entry.forms?.['partizip2']) {
                 <span class="plural">{{ entry.forms?.['partizip2'] }}</span>
-              }
-            </div>
-            <ion-icon
-              class="chevron"
-              [name]="expanded ? 'chevron-up-outline' : 'chevron-down-outline'"
-            ></ion-icon>
-          </div>
-
-          <div class="translation-panel" [class.is-open]="expanded">
-            <div class="translation-inner">
-              @if (tState === 'loading') {
-                <ion-spinner name="dots" class="t-spinner"></ion-spinner>
-              } @else if (tState === 'error') {
-                <span class="t-error">Переклад недоступний</span>
-              } @else if (tState) {
-                <span class="t-text">{{ tState }}</span>
               }
             </div>
           </div>

@@ -78,8 +78,22 @@ export const routes: Routes = [
       },
       {
         path: 'dictionary',
-        loadComponent: () =>
-          import('./features/dictionary/dictionary.component').then((m) => m.DictionaryComponent),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./features/dictionary/dictionary.component').then(
+                (m) => m.DictionaryComponent
+              ),
+          },
+          {
+            path: 'word/:lemma',
+            loadComponent: () =>
+              import('./features/dictionary/word-detail/word-detail.component').then(
+                (m) => m.WordDetailComponent
+              ),
+          },
+        ],
       },
       {
         path: 'game',

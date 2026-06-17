@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/navbar/dictionary" (click)="goBack()"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ lemma }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if (isLoading()) {
+    <div class="state-screen">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  } @else {
+    <div class="word-card">
+      <div class="word-header">
+        @if (article) {
+          <span class="article article--{{ article }}">{{ article }}</span>
+        }
+        <div class="word-col">
+          <span class="word-lemma">{{ lemma }}</span>
+          @if (plural) {
+            <span class="word-plural">Pl.: {{ plural }}</span>
+          }
+        </div>
+      </div>
+
+      @if (definitions().length > 0) {
+        <div class="word-divider"></div>
+
+        @for (group of definitions(); track group.pos) {
+          <div class="def-group">
+            <p class="def-pos">{{ group.pos }}</p>
+            <ol class="def-list">
+              @for (meaning of group.meanings; track $index) {
+                <li class="def-item">{{ meaning }}</li>
+              }
+            </ol>
+          </div>
+        }
+      } @else {
+        <div class="word-divider"></div>
+        <p class="empty-state">Визначення не знайдено</p>
+      }
+    </div>
+  }
+</ion-content>

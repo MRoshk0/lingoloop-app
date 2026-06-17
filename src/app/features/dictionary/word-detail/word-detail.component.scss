@@ -1,0 +1,110 @@
+.state-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+
+  ion-spinner {
+    color: var(--ion-color-primary);
+    width: 36px;
+    height: 36px;
+  }
+}
+
+.word-card {
+  margin: 16px;
+  background: var(--app-surface-color);
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(61, 46, 0, 0.10);
+  padding: 24px;
+}
+
+// ── Word header ───────────────────────────────────
+
+.word-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.article {
+  flex-shrink: 0;
+  min-width: 36px;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.7);
+  margin-top: 3px;
+
+  &--der { color: var(--article-der); }
+  &--die { color: var(--article-die); }
+  &--das { color: var(--article-das); }
+}
+
+.word-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.word-lemma {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+  line-height: 1.15;
+}
+
+.word-plural {
+  font-size: 13px;
+  color: #b8a467;
+}
+
+// ── Divider ───────────────────────────────────────
+
+.word-divider {
+  height: 1px;
+  background: rgba(61, 46, 0, 0.10);
+  margin: 20px 0;
+}
+
+// ── Definitions ───────────────────────────────────
+
+.def-group {
+  & + .def-group {
+    margin-top: 16px;
+  }
+}
+
+.def-pos {
+  font-size: 11px;
+  font-weight: 700;
+  color: #b8a467;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 8px;
+}
+
+.def-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.def-item {
+  font-size: 15px;
+  color: var(--ion-text-color);
+  line-height: 1.5;
+  margin-bottom: 6px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.empty-state {
+  font-size: 14px;
+  color: #b8a467;
+  text-align: center;
+  margin: 0;
+}

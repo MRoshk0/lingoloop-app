@@ -153,50 +153,6 @@
   color: #b8a467;
 }
 
-.chevron {
-  flex-shrink: 0;
-  color: #b8a467;
-  font-size: 16px;
-  transition: transform 0.25s ease;
-}
-
-// ── Translation panel ─────────────────────────────
-
-.translation-panel {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.25s ease;
-
-  &.is-open {
-    max-height: 64px;
-  }
-}
-
-.translation-inner {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 16px 12px 66px; // indent to align with lemma
-}
-
-.t-spinner {
-  color: #b8a467;
-  width: 18px;
-  height: 18px;
-}
-
-.t-text {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--ion-text-color);
-}
-
-.t-error {
-  font-size: 13px;
-  color: #b8a467;
-  font-style: italic;
-}
-
 // ── Remote results ────────────────────────────────
 
 .remote-loading {

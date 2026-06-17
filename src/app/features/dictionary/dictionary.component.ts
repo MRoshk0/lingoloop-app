@@ -1,13 +1,11 @@
 import { Component, inject, signal, computed, OnDestroy } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { IonContent, IonSearchbar, IonSpinner, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { chevronDownOutline, chevronUpOutline, timeOutline } from 'ionicons/icons';
+import { timeOutline } from 'ionicons/icons';
 import { WordLookupService } from '../../core/services/word-lookup.service';
 import { WordEntry, DictionaryEntry } from '../../core/models';
-
-type TranslationState = 'loading' | 'error' | string;
 
 interface UnifiedEntry {
   word: string;
@@ -29,7 +27,7 @@ const HISTORY_MAX = 8;
 })
 export class DictionaryComponent implements OnDestroy {
   private lookupService = inject(WordLookupService);
-  private http = inject(HttpClient);
+  private router = inject(Router);
 
   query = signal('');
   isReady = this.lookupService.isReady;
@@ -75,13 +73,10 @@ export class DictionaryComponent implements OnDestroy {
 
   hasResults = computed(() => this.mergedResults().length > 0);
 
-  expandedLemma = signal<string | null>(null);
-  translations = signal<Record<string, TranslationState>>({});
-
   private remoteSub: Subscription | null = null;
 
   constructor() {
-    addIcons({ chevronDownOutline, chevronUpOutline, timeOutline });
+    addIcons({ timeOutline });
   }
 
   ngOnDestroy() {
@@ -104,21 +99,14 @@ export class DictionaryComponent implements OnDestroy {
     localStorage.removeItem(HISTORY_KEY);
   }
 
-  toggleEntry(word: string, article?: string | null) {
-    if (this.expandedLemma() === word) {
-      this.expandedLemma.set(null);
-      return;
-    }
-    this.expandedLemma.set(word);
+  navigateToWord(entry: UnifiedEntry) {
     this.saveToHistory(this.query());
-    if (!this.translations()[word]) {
-      this.fetchTranslation(word, article);
-    }
+    this.router.navigate(['/navbar/dictionary/word', entry.word], {
+      state: { article: entry.article, plural: entry.plural },
+    });
   }
 
   private triggerSearch(q: string) {
-    this.expandedLemma.set(null);
-    this.translations.set({});
     this.remoteSub?.unsubscribe();
 
     if (!q.trim()) {
@@ -159,20 +147,5 @@ export class DictionaryComponent implements OnDestroy {
     } catch {
       return [];
     }
-  }
-
-  private fetchTranslation(lemma: string, article?: string | null) {
-    this.translations.update((t) => ({ ...t, [lemma]: 'loading' }));
-    const query = article ? `${article} ${lemma}` : lemma;
-    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(query)}&langpair=de|uk`;
-    this.http.get<{ responseData: { translatedText: string } }>(url).subscribe({
-      next: (res) => {
-        const text = res?.responseData?.translatedText?.trim();
-        this.translations.update((t) => ({ ...t, [lemma]: text || 'error' }));
-      },
-      error: () => {
-        this.translations.update((t) => ({ ...t, [lemma]: 'error' }));
-      },
-    });
   }
 }
