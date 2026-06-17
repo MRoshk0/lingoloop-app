@@ -3,21 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-
-export interface Card {
-  id: string;
-  frontText: string;
-  backText: string;
-  deckId: string | null;
-}
-
-export interface CardSet {
-  id: string;
-  name: string;
-  description?: string | null;
-  readOnly?: boolean;
-  cards: Card[];
-}
+import { Card, CardSet } from '../models';
 
 interface DeckResponse {
   id: string;

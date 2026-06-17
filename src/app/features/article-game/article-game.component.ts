@@ -2,7 +2,8 @@ import { Component, inject, signal, computed, OnDestroy } from '@angular/core';
 import { IonContent, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { gameControllerOutline, trophyOutline } from 'ionicons/icons';
-import { WordLookupService, WordEntry } from '../../core/services/word-lookup.service';
+import { WordLookupService } from '../../core/services/word-lookup.service';
+import { WordEntry } from '../../core/models';
 import { ActivityLogService } from '../../core/services/activity-log.service';
 
 type GameState = 'setup' | 'playing' | 'summary';

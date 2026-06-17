@@ -1,11 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
-export interface WordEntry {
-  lemma: string;
-  article: 'der' | 'die' | 'das';
-  plural: string | null;
-}
+import { WordEntry } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class WordLookupService {

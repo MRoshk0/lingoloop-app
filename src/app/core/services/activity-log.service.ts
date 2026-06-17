@@ -1,11 +1,5 @@
 import { Injectable } from '@angular/core';
-
-export interface ActivityEntry {
-  date: string; // YYYY-MM-DD
-  type: 'article-game';
-  score: number;
-  total: number;
-}
+import { ActivityEntry } from '../models';
 
 const STORAGE_KEY = 'll-activity-log';
 
