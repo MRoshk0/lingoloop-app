@@ -1,11 +1,14 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 import { IonContent, IonSearchbar, IonSpinner, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { chevronDownOutline, chevronUpOutline } from 'ionicons/icons';
 import { WordLookupService } from '../../core/services/word-lookup.service';
+import { DictionaryApiService } from '../../core/services/dictionary-api.service';
+import { DictionaryEntry } from '../../core/models';
 
-type TranslationState = 'loading' | 'error' | string; // string = translated text
+type TranslationState = 'loading' | 'error' | string;
 
 @Component({
   selector: 'app-dictionary',
@@ -16,25 +19,53 @@ type TranslationState = 'loading' | 'error' | string; // string = translated tex
 })
 export class DictionaryComponent {
   private lookupService = inject(WordLookupService);
+  private dictionaryApiService = inject(DictionaryApiService);
   private http = inject(HttpClient);
 
   query = signal('');
   isReady = this.lookupService.isReady;
-  results = computed(() => {
+
+  localResults = computed(() => {
     const q = this.query().trim();
     return q ? this.lookupService.search(q, 20) : [];
   });
 
+  remoteResults = signal<DictionaryEntry[]>([]);
+  isLoadingRemote = signal(false);
+
+  hasResults = computed(() => this.localResults().length > 0 || this.remoteResults().length > 0);
+
   expandedLemma = signal<string | null>(null);
   translations = signal<Record<string, TranslationState>>({});
+
+  private remoteSub: Subscription | null = null;
 
   constructor() {
     addIcons({ chevronDownOutline, chevronUpOutline });
   }
 
   onSearch(event: Event) {
-    this.query.set((event as CustomEvent).detail.value ?? '');
+    const q = ((event as CustomEvent).detail.value ?? '') as string;
+    this.query.set(q);
     this.expandedLemma.set(null);
+    this.remoteResults.set([]);
+
+    this.remoteSub?.unsubscribe();
+
+    if (q.trim().length < 1) return;
+
+    const local = this.lookupService.search(q, 20);
+    if (local.length >= 3) return;
+
+    this.isLoadingRemote.set(true);
+    this.remoteSub = this.dictionaryApiService.search(q, 20).subscribe({
+      next: (results) => this.remoteResults.set(results),
+      error: (err) => {
+        console.error('[Dictionary] Remote search failed', err);
+        this.remoteResults.set([]);
+      },
+      complete: () => this.isLoadingRemote.set(false),
+    });
   }
 
   toggle(lemma: string) {
@@ -46,6 +77,10 @@ export class DictionaryComponent {
     if (!this.translations()[lemma]) {
       this.fetchTranslation(lemma);
     }
+  }
+
+  toggleRemote(word: string) {
+    this.toggle(word);
   }
 
   private fetchTranslation(lemma: string) {

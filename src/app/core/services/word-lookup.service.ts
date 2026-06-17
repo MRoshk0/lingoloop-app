@@ -1,13 +1,18 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { WordEntry } from '../models';
+import { DictionaryEntry } from '../models';
+import { DictionaryApiService } from './dictionary-api.service';
 
 @Injectable({ providedIn: 'root' })
 export class WordLookupService {
   isReady = signal(false);
 
   private index = new Map<string, WordEntry>();
-  private sortedLemmas: string[] = []; // lowercase, sorted for prefix search
+  private sortedLemmas: string[] = [];
+  private dictionaryApi = inject(DictionaryApiService);
 
   constructor(private http: HttpClient) {
     this.http.get<WordEntry[]>('/assets/data/german-nouns.json').subscribe({
@@ -43,6 +48,23 @@ export class WordLookupService {
       if (entry) results.push(entry);
     }
     return results;
+  }
+
+  searchWithFallback(
+    query: string,
+    limit = 20
+  ): Observable<{ local: WordEntry[]; remote: DictionaryEntry[] }> {
+    const local = this.search(query, limit);
+    if (local.length >= 3) {
+      return of({ local, remote: [] });
+    }
+    return this.dictionaryApi.search(query, limit).pipe(
+      map((remote) => ({ local, remote })),
+      catchError((err) => {
+        console.error('[WordLookupService] Remote search failed', err);
+        return of({ local, remote: [] });
+      })
+    );
   }
 
   /** Exact lookup by lemma (case-insensitive). */

@@ -19,14 +19,14 @@
       <span class="state-emoji">🔍</span>
       <p>Почни вводити слово для пошуку</p>
     </div>
-  } @else if (results().length === 0) {
+  } @else if (!hasResults() && !isLoadingRemote()) {
     <div class="state-screen">
       <span class="state-emoji">😕</span>
       <p>Нічого не знайдено</p>
     </div>
   } @else {
     <div class="results-wrap">
-      @for (entry of results(); track entry.lemma; let last = $last) {
+      @for (entry of localResults(); track entry.lemma; let last = $last) {
         @let expanded = expandedLemma() === entry.lemma;
         @let tState = translations()[entry.lemma];
 
@@ -63,5 +63,51 @@
         }
       }
     </div>
+
+    @if (isLoadingRemote()) {
+      <div class="remote-loading">
+        <ion-spinner name="dots"></ion-spinner>
+      </div>
+    }
+
+    @if (remoteResults().length > 0) {
+      <div class="remote-section">
+        <p class="remote-label">More results</p>
+        @for (entry of remoteResults(); track entry.id) {
+          <div class="result-item" (click)="toggleRemote(entry.word)">
+            <div class="result-row">
+              @if (entry.article) {
+                <span class="article article--{{ entry.article }}">{{ entry.article }}</span>
+              } @else {
+                <span class="pos-badge">{{ entry.pos }}</span>
+              }
+              <div class="word-col">
+                <span class="lemma">{{ entry.word }}</span>
+                @if (entry.forms?.['partizip2']) {
+                  <span class="plural">{{ entry.forms?.['partizip2'] }}</span>
+                }
+              </div>
+              <ion-icon
+                class="chevron"
+                [name]="expandedLemma() === entry.word ? 'chevron-up-outline' : 'chevron-down-outline'"
+              ></ion-icon>
+            </div>
+
+            <div class="translation-panel" [class.is-open]="expandedLemma() === entry.word">
+              <div class="translation-inner">
+                @let tState = translations()[entry.word];
+                @if (tState === 'loading') {
+                  <ion-spinner name="dots" class="t-spinner"></ion-spinner>
+                } @else if (tState === 'error') {
+                  <span class="t-error">Переклад недоступний</span>
+                } @else if (tState) {
+                  <span class="t-text">{{ tState }}</span>
+                }
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
   }
 </ion-content>

@@ -133,6 +133,48 @@
   font-style: italic;
 }
 
+// ── Remote results ────────────────────────────────
+
+.remote-loading {
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+
+  ion-spinner {
+    color: #b8a467;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.remote-section {
+  margin: 8px 16px 16px;
+  background: var(--app-surface-color);
+  border-radius: var(--app-border-radius);
+  overflow: hidden;
+}
+
+.remote-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #b8a467;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 16px 4px;
+}
+
+.pos-badge {
+  flex-shrink: 0;
+  width: 36px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  padding: 3px 0;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.6);
+  color: #b8a467;
+}
+
 // ── Divider ───────────────────────────────────────
 
 .divider {
