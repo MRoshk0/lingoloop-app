@@ -61,11 +61,14 @@ export class DictionaryComponent {
       forms: e.forms ?? null,
     }));
 
-    const seen = new Set(localUnified.map((e) => e.word.toLowerCase()));
+    const seen = new Set(localUnified.map(e =>
+      `${e.word.toLowerCase()}|${e.article ?? ''}`
+    ));
     const merged = [...localUnified];
     for (const entry of remoteUnified) {
-      if (!seen.has(entry.word.toLowerCase())) {
-        seen.add(entry.word.toLowerCase());
+      const key = `${entry.word.toLowerCase()}|${entry.article ?? ''}`;
+      if (!seen.has(key)) {
+        seen.add(key);
         merged.push(entry);
       }
     }
