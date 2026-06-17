@@ -45,47 +45,37 @@ export class DictionaryComponent {
   }
 
   onSearch(event: Event) {
-    const q = ((event as CustomEvent).detail.value ?? '') as string;
-    this.query.set(q);
+    this.query.set((event as CustomEvent).detail.value ?? '');
     this.expandedLemma.set(null);
     this.remoteResults.set([]);
-
-    this.remoteSub?.unsubscribe();
-
-    if (q.trim().length < 1) return;
-
-    const local = this.lookupService.search(q, 20);
-    if (local.length >= 3) return;
-
-    this.isLoadingRemote.set(true);
-    this.remoteSub = this.dictionaryApiService.search(q, 20).subscribe({
-      next: (results) => this.remoteResults.set(results),
-      error: (err) => {
-        console.error('[Dictionary] Remote search failed', err);
-        this.remoteResults.set([]);
-      },
-      complete: () => this.isLoadingRemote.set(false),
-    });
   }
 
-  toggle(lemma: string) {
+  toggle(lemma: string, article?: string | null) {
     if (this.expandedLemma() === lemma) {
       this.expandedLemma.set(null);
       return;
     }
     this.expandedLemma.set(lemma);
     if (!this.translations()[lemma]) {
-      this.fetchTranslation(lemma);
+      this.fetchTranslation(lemma, article);
     }
   }
 
-  toggleRemote(word: string) {
-    this.toggle(word);
+  toggleRemote(word: string, article?: string | null) {
+    if (this.expandedLemma() === word) {
+      this.expandedLemma.set(null);
+      return;
+    }
+    this.expandedLemma.set(word);
+    if (!this.translations()[word]) {
+      this.fetchTranslation(word, article);
+    }
   }
 
-  private fetchTranslation(lemma: string) {
+  private fetchTranslation(lemma: string, article?: string | null) {
     this.translations.update((t) => ({ ...t, [lemma]: 'loading' }));
-    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(lemma)}&langpair=de|uk`;
+    const query = article ? `${article} ${lemma}` : lemma;
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(query)}&langpair=de|uk`;
     this.http.get<{ responseData: { translatedText: string } }>(url).subscribe({
       next: (res) => {
         const text = res?.responseData?.translatedText?.trim();

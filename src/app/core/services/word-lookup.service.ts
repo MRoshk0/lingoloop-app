@@ -27,10 +27,28 @@ export class WordLookupService {
     });
   }
 
+  private readonly ARTICLES = ['der', 'die', 'das'] as const;
+
+  /** Parse "der See" → { article: 'der', prefix: 'See' }
+      Parse "See"     → { article: null,  prefix: 'See' } */
+  parseQuery(query: string): { article: string | null; prefix: string } {
+    const q = query.trim();
+    for (const art of this.ARTICLES) {
+      if (q.toLowerCase().startsWith(art + ' ')) {
+        const prefix = q.slice(art.length + 1).trim();
+        return { article: art, prefix };
+      }
+    }
+    return { article: null, prefix: q };
+  }
+
   /** Case-insensitive prefix match, returns up to `limit` results. */
   search(query: string, limit = 10): WordEntry[] {
     if (!query.trim() || !this.isReady()) return [];
-    const q = query.toLowerCase();
+    const { article, prefix } = this.parseQuery(query);
+    if (!prefix) return [];
+
+    const q = prefix.toLowerCase();
 
     // Binary search for the first lemma >= q
     let lo = 0;
@@ -45,7 +63,9 @@ export class WordLookupService {
     for (let i = lo; i < this.sortedLemmas.length && results.length < limit; i++) {
       if (!this.sortedLemmas[i].startsWith(q)) break;
       const entry = this.index.get(this.sortedLemmas[i]);
-      if (entry) results.push(entry);
+      if (!entry) continue;
+      if (article && entry.article !== article) continue;
+      results.push(entry);
     }
     return results;
   }
