@@ -1,12 +1,11 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { IonContent, IonSearchbar, IonSpinner, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { chevronDownOutline, chevronUpOutline } from 'ionicons/icons';
 import { WordLookupService } from '../../core/services/word-lookup.service';
-import { DictionaryApiService } from '../../core/services/dictionary-api.service';
-import { DictionaryEntry } from '../../core/models';
+import { WordEntry, DictionaryEntry } from '../../core/models';
 
 type TranslationState = 'loading' | 'error' | string;
 
@@ -25,24 +24,19 @@ interface UnifiedEntry {
   templateUrl: './dictionary.component.html',
   styleUrls: ['./dictionary.component.scss'],
 })
-export class DictionaryComponent {
+export class DictionaryComponent implements OnDestroy {
   private lookupService = inject(WordLookupService);
-  private dictionaryApiService = inject(DictionaryApiService);
   private http = inject(HttpClient);
 
   query = signal('');
   isReady = this.lookupService.isReady;
 
-  localResults = computed(() => {
-    const q = this.query().trim();
-    return q ? this.lookupService.search(q, 20) : [];
-  });
-
+  localResultsData = signal<WordEntry[]>([]);
   remoteResults = signal<DictionaryEntry[]>([]);
   isLoadingRemote = signal(false);
 
   mergedResults = computed(() => {
-    const local = this.localResults();
+    const local = this.localResultsData();
     const remote = this.remoteResults();
 
     const localUnified: UnifiedEntry[] = local.map((e) => ({
@@ -61,9 +55,7 @@ export class DictionaryComponent {
       forms: e.forms ?? null,
     }));
 
-    const seen = new Set(localUnified.map(e =>
-      `${e.word.toLowerCase()}|${e.article ?? ''}`
-    ));
+    const seen = new Set(localUnified.map((e) => `${e.word.toLowerCase()}|${e.article ?? ''}`));
     const merged = [...localUnified];
     for (const entry of remoteUnified) {
       const key = `${entry.word.toLowerCase()}|${entry.article ?? ''}`;
@@ -87,10 +79,36 @@ export class DictionaryComponent {
     addIcons({ chevronDownOutline, chevronUpOutline });
   }
 
+  ngOnDestroy() {
+    this.remoteSub?.unsubscribe();
+  }
+
   onSearch(event: Event) {
-    this.query.set((event as CustomEvent).detail.value ?? '');
+    const q = ((event as CustomEvent).detail.value ?? '') as string;
+    this.query.set(q);
     this.expandedLemma.set(null);
-    this.remoteResults.set([]);
+    this.translations.set({});
+
+    this.remoteSub?.unsubscribe();
+
+    if (!q.trim()) {
+      this.localResultsData.set([]);
+      this.remoteResults.set([]);
+      this.isLoadingRemote.set(false);
+      return;
+    }
+
+    this.isLoadingRemote.set(true);
+    this.remoteSub = this.lookupService.searchWithFallback(q, 20).subscribe({
+      next: ({ local, remote }) => {
+        this.localResultsData.set(local);
+        this.remoteResults.set(remote);
+        this.isLoadingRemote.set(false);
+      },
+      error: () => {
+        this.isLoadingRemote.set(false);
+      },
+    });
   }
 
   toggleEntry(word: string, article?: string | null) {
