@@ -26,6 +26,70 @@
   font-size: 40px;
 }
 
+// ── Search history ────────────────────────────────
+
+.history-section {
+  padding: 16px 16px 0;
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.history-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #b8a467;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.history-clear {
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: #b8a467;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+
+.history-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.history-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--app-surface-color);
+  border: none;
+  border-radius: var(--app-border-radius);
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ion-text-color);
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.15s ease;
+
+  ion-icon {
+    color: #b8a467;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  &:active {
+    opacity: 0.65;
+  }
+}
+
 // ── Results list ──────────────────────────────────
 
 .results-wrap {

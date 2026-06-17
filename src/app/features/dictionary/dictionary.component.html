@@ -15,10 +15,27 @@
       <p>Завантаження словника…</p>
     </div>
   } @else if (!query().trim()) {
-    <div class="state-screen">
-      <span class="state-emoji">🔍</span>
-      <p>Почни вводити слово для пошуку</p>
-    </div>
+    @if (searchHistory().length > 0) {
+      <div class="history-section">
+        <div class="history-header">
+          <span class="history-label">Нещодавні</span>
+          <button class="history-clear" (click)="clearHistory()">Очистити</button>
+        </div>
+        <div class="history-chips">
+          @for (item of searchHistory(); track item) {
+            <button class="history-chip" (click)="applyHistory(item)">
+              <ion-icon name="time-outline"></ion-icon>
+              {{ item }}
+            </button>
+          }
+        </div>
+      </div>
+    } @else {
+      <div class="state-screen">
+        <span class="state-emoji">🔍</span>
+        <p>Почни вводити слово для пошуку</p>
+      </div>
+    }
   } @else if (mergedResults().length > 0) {
     <div class="results-wrap">
       @if (isLoadingRemote()) {

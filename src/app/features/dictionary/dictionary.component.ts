@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { IonContent, IonSearchbar, IonSpinner, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { chevronDownOutline, chevronUpOutline } from 'ionicons/icons';
+import { chevronDownOutline, chevronUpOutline, timeOutline } from 'ionicons/icons';
 import { WordLookupService } from '../../core/services/word-lookup.service';
 import { WordEntry, DictionaryEntry } from '../../core/models';
 
@@ -16,6 +16,9 @@ interface UnifiedEntry {
   plural: string | null;
   forms: Record<string, string> | null;
 }
+
+const HISTORY_KEY = 'll-search-history';
+const HISTORY_MAX = 8;
 
 @Component({
   selector: 'app-dictionary',
@@ -30,6 +33,8 @@ export class DictionaryComponent implements OnDestroy {
 
   query = signal('');
   isReady = this.lookupService.isReady;
+
+  searchHistory = signal<string[]>(this.loadHistory());
 
   localResultsData = signal<WordEntry[]>([]);
   remoteResults = signal<DictionaryEntry[]>([]);
@@ -76,7 +81,7 @@ export class DictionaryComponent implements OnDestroy {
   private remoteSub: Subscription | null = null;
 
   constructor() {
-    addIcons({ chevronDownOutline, chevronUpOutline });
+    addIcons({ chevronDownOutline, chevronUpOutline, timeOutline });
   }
 
   ngOnDestroy() {
@@ -86,9 +91,34 @@ export class DictionaryComponent implements OnDestroy {
   onSearch(event: Event) {
     const q = ((event as CustomEvent).detail.value ?? '') as string;
     this.query.set(q);
+    this.triggerSearch(q);
+  }
+
+  applyHistory(q: string) {
+    this.query.set(q);
+    this.triggerSearch(q);
+  }
+
+  clearHistory() {
+    this.searchHistory.set([]);
+    localStorage.removeItem(HISTORY_KEY);
+  }
+
+  toggleEntry(word: string, article?: string | null) {
+    if (this.expandedLemma() === word) {
+      this.expandedLemma.set(null);
+      return;
+    }
+    this.expandedLemma.set(word);
+    this.saveToHistory(this.query());
+    if (!this.translations()[word]) {
+      this.fetchTranslation(word, article);
+    }
+  }
+
+  private triggerSearch(q: string) {
     this.expandedLemma.set(null);
     this.translations.set({});
-
     this.remoteSub?.unsubscribe();
 
     if (!q.trim()) {
@@ -111,14 +141,23 @@ export class DictionaryComponent implements OnDestroy {
     });
   }
 
-  toggleEntry(word: string, article?: string | null) {
-    if (this.expandedLemma() === word) {
-      this.expandedLemma.set(null);
-      return;
-    }
-    this.expandedLemma.set(word);
-    if (!this.translations()[word]) {
-      this.fetchTranslation(word, article);
+  private saveToHistory(q: string) {
+    const trimmed = q.trim();
+    if (!trimmed) return;
+    const deduped = this.searchHistory().filter(
+      (h) => h.toLowerCase() !== trimmed.toLowerCase()
+    );
+    deduped.unshift(trimmed);
+    const updated = deduped.slice(0, HISTORY_MAX);
+    this.searchHistory.set(updated);
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(updated));
+  }
+
+  private loadHistory(): string[] {
+    try {
+      return JSON.parse(localStorage.getItem(HISTORY_KEY) ?? '[]');
+    } catch {
+      return [];
     }
   }
 
