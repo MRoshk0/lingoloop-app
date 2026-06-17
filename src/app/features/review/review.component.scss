@@ -6,11 +6,79 @@
   padding: 20px 16px 24px;
 }
 
+// ── Picking ───────────────────────────────────────
+
+.picking-screen {
+  padding-top: 24px;
+  gap: 16px;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+.pick-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+  margin: 0 0 4px;
+  text-align: center;
+}
+
+.deck-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.deck-card {
+  margin: 0;
+  box-shadow: 0 2px 8px rgba(61, 46, 0, 0.08);
+
+  ion-card-content {
+    padding: 16px;
+  }
+}
+
+.deck-card-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.deck-card-name {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ion-text-color);
+}
+
+.deck-card-count {
+  font-size: 13px;
+  color: #b8a467;
+  font-weight: 500;
+}
+
+.deck-play-icon {
+  color: var(--ion-color-primary);
+  font-size: 22px;
+}
+
 // ── Idle ──────────────────────────────────────────
 
 .idle-screen {
   justify-content: center;
-  gap: 40px;
+  gap: 32px;
+}
+
+.idle-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.back-link {
+  --color: #b8a467;
+  height: 40px;
+  font-size: 14px;
 }
 
 .idle-header {

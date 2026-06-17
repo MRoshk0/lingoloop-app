@@ -1,17 +1,47 @@
 <ion-content>
+  <!-- ── PICKING ── -->
+  @if (state() === 'picking') {
+    <div class="screen picking-screen">
+      <h1 class="pick-title">Choose a Deck</h1>
+
+      @if (decks().length === 0) {
+        <p class="empty-state">No decks with cards yet.<br />Add cards in the Cards tab first!</p>
+      } @else {
+        <div class="deck-list">
+          @for (deck of decks(); track deck.id) {
+            <ion-card class="deck-card" button (click)="selectDeck(deck)">
+              <ion-card-content>
+                <div class="deck-card-row">
+                  <span class="deck-card-name">{{ deck.name }}</span>
+                  <span class="deck-card-count">{{ deck.cards.length }} cards</span>
+                  <ion-icon name="play-circle" class="deck-play-icon"></ion-icon>
+                </div>
+              </ion-card-content>
+            </ion-card>
+          }
+        </div>
+      }
+    </div>
+  }
+
   <!-- ── IDLE ── -->
   @if (state() === 'idle') {
     <div class="screen idle-screen">
       <div class="idle-header">
-        <span class="deck-emoji">✈️</span>
-        <h1 class="deck-name">{{ deckName }}</h1>
-        <span class="due-badge">{{ cards.length }} cards due</span>
+        <span class="deck-emoji">🃏</span>
+        <h1 class="deck-name">{{ selectedDeck()?.name }}</h1>
+        <span class="due-badge">{{ selectedDeck()?.cards?.length }} cards</span>
       </div>
 
-      <ion-button expand="block" class="play-btn" (click)="start()">
-        <ion-icon slot="start" name="play-circle"></ion-icon>
-        Start Review
-      </ion-button>
+      <div class="idle-actions">
+        <ion-button expand="block" class="play-btn" (click)="start()">
+          <ion-icon slot="start" name="play-circle"></ion-icon>
+          Start Review
+        </ion-button>
+        <ion-button expand="block" fill="clear" class="back-link" (click)="pickAnother()">
+          Choose a different deck
+        </ion-button>
+      </div>
     </div>
   }
 
@@ -82,8 +112,11 @@
         </ion-card-content>
       </ion-card>
 
-      <ion-button expand="block" fill="outline" class="back-btn" (click)="restart()">
-        Back to Start
+      <ion-button expand="block" class="play-btn" (click)="restart()">
+        Review Again
+      </ion-button>
+      <ion-button expand="block" fill="outline" class="back-btn" (click)="pickAnother()">
+        Choose Another Deck
       </ion-button>
     </div>
   }

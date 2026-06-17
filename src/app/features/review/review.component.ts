@@ -1,14 +1,15 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { IonContent, IonButton, IonCard, IonCardContent, IonIcon } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { playCircle } from 'ionicons/icons';
-import { MOCK_REVIEW_CARDS, MOCK_DECK_NAME, ReviewCard } from './review.mock';
+import { CardsService } from '../../core/services/cards.service';
+import { Card, CardSet } from '../../core/models';
 
-type SessionState = 'idle' | 'reviewing' | 'complete';
+type SessionState = 'picking' | 'idle' | 'reviewing' | 'complete';
 type Rating = 'again' | 'hard' | 'good' | 'easy';
 
 interface SessionResult {
-  card: ReviewCard;
+  card: Card;
   rating: Rating;
 }
 
@@ -20,17 +21,20 @@ interface SessionResult {
   styleUrls: ['./review.component.scss'],
 })
 export class ReviewComponent {
-  readonly deckName = MOCK_DECK_NAME;
-  readonly cards = MOCK_REVIEW_CARDS;
+  private cardsService = inject(CardsService);
 
-  state = signal<SessionState>('idle');
+  decks = computed(() => this.cardsService.cardSets().filter((s) => s.cards.length > 0));
+
+  state = signal<SessionState>('picking');
+  selectedDeck = signal<CardSet | null>(null);
+  cards = signal<Card[]>([]);
   currentIndex = signal(0);
   showAnswer = signal(false);
   results = signal<SessionResult[]>([]);
 
-  currentCard = computed(() => this.cards[this.currentIndex()]);
-  progress = computed(() => `${this.currentIndex() + 1} / ${this.cards.length}`);
-  progressPercent = computed(() => ((this.currentIndex() + 1) / this.cards.length) * 100);
+  currentCard = computed(() => this.cards()[this.currentIndex()]);
+  progress = computed(() => `${this.currentIndex() + 1} / ${this.cards().length}`);
+  progressPercent = computed(() => ((this.currentIndex() + 1) / this.cards().length) * 100);
 
   ratingCounts = computed(() => {
     const r = this.results();
@@ -46,10 +50,23 @@ export class ReviewComponent {
     addIcons({ playCircle });
   }
 
+  ionViewWillEnter() {
+    this.cardsService.loadDecks().subscribe();
+    if (this.state() !== 'reviewing') {
+      this.state.set('picking');
+    }
+  }
+
+  selectDeck(deck: CardSet) {
+    this.selectedDeck.set(deck);
+    this.state.set('idle');
+  }
+
   start() {
     this.currentIndex.set(0);
     this.showAnswer.set(false);
     this.results.set([]);
+    this.cards.set([...this.selectedDeck()!.cards]);
     this.state.set('reviewing');
   }
 
@@ -59,10 +76,8 @@ export class ReviewComponent {
 
   rate(rating: Rating) {
     this.results.update((r) => [...r, { card: this.currentCard(), rating }]);
-    console.log(`[Review] card=${this.currentCard().id} rating=${rating}`);
-
     const next = this.currentIndex() + 1;
-    if (next >= this.cards.length) {
+    if (next >= this.cards().length) {
       this.state.set('complete');
     } else {
       this.currentIndex.set(next);
@@ -72,5 +87,10 @@ export class ReviewComponent {
 
   restart() {
     this.state.set('idle');
+  }
+
+  pickAnother() {
+    this.selectedDeck.set(null);
+    this.state.set('picking');
   }
 }
