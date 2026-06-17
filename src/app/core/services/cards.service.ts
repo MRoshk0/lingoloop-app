@@ -90,17 +90,31 @@ export class CardsService {
       );
   }
 
-  // TODO: replace with PUT /api/cards/:id once the endpoint is available
-  updateCard(deckId: string, cardId: string, frontText: string, backText: string): void {
-    this.cardSets.update((sets) =>
-      sets.map((s) =>
-        s.id === deckId
-          ? {
-              ...s,
-              cards: s.cards.map((c) => (c.id === cardId ? { ...c, frontText, backText } : c)),
-            }
-          : s
-      )
+  updateDeck(deckId: string, name: string, description: string | null): Observable<void> {
+    return this.http
+      .put<unknown>(`${this.base}/api/decks/${deckId}`, { name, description })
+      .pipe(
+        tap(() =>
+          this.cardSets.update((sets) =>
+            sets.map((s) => (s.id === deckId ? { ...s, name, description } : s))
+          )
+        ),
+        map(() => undefined)
+      );
+  }
+
+  updateCard(deckId: string, cardId: string, frontText: string, backText: string): Observable<void> {
+    return this.http.put<unknown>(`${this.base}/api/cards/${cardId}`, { frontText, backText }).pipe(
+      tap(() =>
+        this.cardSets.update((sets) =>
+          sets.map((s) =>
+            s.id === deckId
+              ? { ...s, cards: s.cards.map((c) => (c.id === cardId ? { ...c, frontText, backText } : c)) }
+              : s
+          )
+        )
+      ),
+      map(() => undefined)
     );
   }
 }

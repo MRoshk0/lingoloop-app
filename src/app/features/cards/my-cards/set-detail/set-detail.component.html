@@ -7,10 +7,30 @@
       <span class="title">{{ set()?.name ?? 'My cards' }}</span>
       <span class="count-badge">{{ set()?.cards?.length ?? 0 }} cards</span>
     </div>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="startEditHeader()">
+        <ion-icon name="create-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  @if (isEditingHeader()) {
+    <div class="deck-edit-form">
+      <ion-item class="form-input">
+        <ion-input [(ngModel)]="editName" placeholder="Deck name"></ion-input>
+      </ion-item>
+      <ion-item class="form-input">
+        <ion-input [(ngModel)]="editDescription" placeholder="Description (optional)"></ion-input>
+      </ion-item>
+      <div class="form-actions">
+        <ion-button fill="outline" (click)="cancelHeader()">Cancel</ion-button>
+        <ion-button [disabled]="!editName().trim()" (click)="saveHeader()">Save</ion-button>
+      </div>
+    </div>
+  }
+
   <div class="play-section">
     <ion-button expand="block" class="play-btn" (click)="play()">
       <ion-icon slot="start" name="play-circle"></ion-icon>

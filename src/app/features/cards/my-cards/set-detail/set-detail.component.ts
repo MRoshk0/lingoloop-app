@@ -49,6 +49,11 @@ export class SetDetailComponent {
   setId = this.route.snapshot.paramMap.get('setId') ?? '';
   set = computed(() => this.cardsService.getSet(this.setId));
 
+  // Deck edit
+  isEditingHeader = signal(false);
+  editName = signal('');
+  editDescription = signal('');
+
   // Add form
   frontText = signal('');
   backText = signal('');
@@ -68,6 +73,33 @@ export class SetDetailComponent {
       checkmarkOutline,
       closeOutline,
     });
+    if (!this.cardsService.getSet(this.setId)) {
+      this.cardsService.loadDecks().subscribe();
+    }
+  }
+
+  startEditHeader() {
+    const s = this.set();
+    this.editName.set(s?.name ?? '');
+    this.editDescription.set(s?.description ?? '');
+    this.isEditingHeader.set(true);
+  }
+
+  saveHeader() {
+    const name = this.editName().trim();
+    if (!name) return;
+    const description = this.editDescription().trim() || null;
+    this.cardsService.updateDeck(this.setId, name, description).subscribe({
+      next: () => this.isEditingHeader.set(false),
+      error: (err) => {
+        console.error('Failed to update deck', err);
+        this.isEditingHeader.set(false);
+      },
+    });
+  }
+
+  cancelHeader() {
+    this.isEditingHeader.set(false);
   }
 
   addCard() {
@@ -94,10 +126,14 @@ export class SetDetailComponent {
     const id = this.editingCardId();
     const front = this.editFrontText().trim();
     const back = this.editBackText().trim();
-    if (id !== null && front && back) {
-      this.cardsService.updateCard(this.setId, id, front, back);
-    }
-    this.editingCardId.set(null);
+    if (id === null || !front || !back) return;
+    this.cardsService.updateCard(this.setId, id, front, back).subscribe({
+      next: () => this.editingCardId.set(null),
+      error: (err) => {
+        console.error('Failed to update card', err);
+        this.editingCardId.set(null);
+      },
+    });
   }
 
   cancelEdit() {
