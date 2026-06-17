@@ -10,6 +10,14 @@ import { DictionaryEntry } from '../../core/models';
 
 type TranslationState = 'loading' | 'error' | string;
 
+interface UnifiedEntry {
+  word: string;
+  article: string | null;
+  pos: string;
+  plural: string | null;
+  forms: Record<string, string> | null;
+}
+
 @Component({
   selector: 'app-dictionary',
   standalone: true,
@@ -33,7 +41,39 @@ export class DictionaryComponent {
   remoteResults = signal<DictionaryEntry[]>([]);
   isLoadingRemote = signal(false);
 
-  hasResults = computed(() => this.localResults().length > 0 || this.remoteResults().length > 0);
+  mergedResults = computed(() => {
+    const local = this.localResults();
+    const remote = this.remoteResults();
+
+    const localUnified: UnifiedEntry[] = local.map((e) => ({
+      word: e.lemma,
+      article: e.article,
+      pos: 'noun',
+      plural: e.plural ?? null,
+      forms: null,
+    }));
+
+    const remoteUnified: UnifiedEntry[] = remote.map((e) => ({
+      word: e.word,
+      article: e.article ?? null,
+      pos: e.pos,
+      plural: null,
+      forms: e.forms ?? null,
+    }));
+
+    const seen = new Set(localUnified.map((e) => e.word.toLowerCase()));
+    const merged = [...localUnified];
+    for (const entry of remoteUnified) {
+      if (!seen.has(entry.word.toLowerCase())) {
+        seen.add(entry.word.toLowerCase());
+        merged.push(entry);
+      }
+    }
+
+    return merged.sort((a, b) => a.word.localeCompare(b.word, 'de'));
+  });
+
+  hasResults = computed(() => this.mergedResults().length > 0);
 
   expandedLemma = signal<string | null>(null);
   translations = signal<Record<string, TranslationState>>({});
@@ -50,18 +90,7 @@ export class DictionaryComponent {
     this.remoteResults.set([]);
   }
 
-  toggle(lemma: string, article?: string | null) {
-    if (this.expandedLemma() === lemma) {
-      this.expandedLemma.set(null);
-      return;
-    }
-    this.expandedLemma.set(lemma);
-    if (!this.translations()[lemma]) {
-      this.fetchTranslation(lemma, article);
-    }
-  }
-
-  toggleRemote(word: string, article?: string | null) {
+  toggleEntry(word: string, article?: string | null) {
     if (this.expandedLemma() === word) {
       this.expandedLemma.set(null);
       return;
