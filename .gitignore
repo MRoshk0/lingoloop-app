@@ -3,5 +3,7 @@ dist/
 www/
 .angular/
 .idea/
-.vscode/
+.vscode/*
+!.vscode/launch.json
+!.vscode/tasks.json
 .env
