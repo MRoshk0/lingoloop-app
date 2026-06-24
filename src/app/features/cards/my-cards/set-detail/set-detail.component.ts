@@ -12,6 +12,7 @@ import {
   IonButton,
   IonIcon,
   ModalController,
+  AlertController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import {
@@ -51,6 +52,7 @@ export class SetDetailComponent {
   private router = inject(Router);
   private photoCardService = inject(PhotoCardService);
   private modalController = inject(ModalController);
+  private alertController = inject(AlertController);
 
   setId = this.route.snapshot.paramMap.get('setId') ?? '';
   set = computed(() => this.cardsService.getSet(this.setId));
@@ -158,6 +160,28 @@ export class SetDetailComponent {
     this.cardsService.removeCard(this.setId, cardId).subscribe({
       error: (err) => console.error('Failed to remove card', err),
     });
+  }
+
+  async deleteDeck() {
+    const deckName = this.set()?.name ?? 'цю деку';
+    const alert = await this.alertController.create({
+      header: 'Видалити деку?',
+      message: `«${deckName}» та всі її картки будуть видалені назавжди.`,
+      buttons: [
+        { text: 'Скасувати', role: 'cancel' },
+        {
+          text: 'Видалити',
+          role: 'destructive',
+          handler: () => {
+            this.cardsService.deleteSet(this.setId).subscribe({
+              next: () => this.router.navigateByUrl('/navbar/cards/my-cards', { replaceUrl: true }),
+              error: (err) => console.error('Failed to delete deck', err),
+            });
+          },
+        },
+      ],
+    });
+    await alert.present();
   }
 
   async openPhotoFlow() {

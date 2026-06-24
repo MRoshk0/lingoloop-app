@@ -90,6 +90,12 @@ export class CardsService {
       );
   }
 
+  deleteSet(deckId: string): Observable<void> {
+    return this.http.delete<void>(`${this.base}/api/decks/${deckId}`).pipe(
+      tap(() => this.cardSets.update((sets) => sets.filter((s) => s.id !== deckId)))
+    );
+  }
+
   updateDeck(deckId: string, name: string, description: string | null): Observable<void> {
     return this.http
       .put<unknown>(`${this.base}/api/decks/${deckId}`, { name, description })

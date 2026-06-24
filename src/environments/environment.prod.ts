@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.lingoloop.app',
+  apiUrl: 'http://100.87.43.49:8080',
 };
