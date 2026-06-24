@@ -135,7 +135,7 @@ export class CardsService {
   }
 
   updateCard(deckId: string, cardId: string, frontText: string, backText: string): Observable<void> {
-    return this.http.put<unknown>(`${this.base}/api/cards/${cardId}`, { frontText, backText }).pipe(
+    return this.http.put<unknown>(`${this.base}/api/cards/${cardId}`, { frontText, backText, deckId }).pipe(
       tap(() =>
         this.cardSets.update((sets) =>
           sets.map((s) =>
