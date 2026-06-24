@@ -106,6 +106,17 @@
   padding: 4px 14px;
   font-size: 13px;
   font-weight: 600;
+
+  &--empty {
+    opacity: 0.5;
+  }
+}
+
+.no-due-msg {
+  font-size: 15px;
+  color: #b8a467;
+  text-align: center;
+  margin: -16px 0 0;
 }
 
 .play-btn {

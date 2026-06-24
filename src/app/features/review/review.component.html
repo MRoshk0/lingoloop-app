@@ -30,12 +30,27 @@
       <div class="idle-header">
         <span class="deck-emoji">🃏</span>
         <h1 class="deck-name">{{ selectedDeck()?.name }}</h1>
-        <span class="due-badge">{{ selectedDeck()?.cards?.length }} cards</span>
+        <span class="due-badge" [class.due-badge--empty]="dueCount() === 0">
+          {{ dueCount() }} due today
+        </span>
       </div>
 
+      @if (noDue()) {
+        <p class="no-due-msg">No cards due today! 🎉</p>
+      }
+
       <div class="idle-actions">
-        <ion-button expand="block" class="play-btn" (click)="start()">
-          <ion-icon slot="start" name="play-circle"></ion-icon>
+        <ion-button
+          expand="block"
+          class="play-btn"
+          [disabled]="isLoading() || dueCount() === 0"
+          (click)="start()"
+        >
+          @if (isLoading()) {
+            <ion-spinner name="crescent" slot="start"></ion-spinner>
+          } @else {
+            <ion-icon slot="start" name="play-circle"></ion-icon>
+          }
           Start Review
         </ion-button>
         <ion-button expand="block" fill="clear" class="back-link" (click)="pickAnother()">

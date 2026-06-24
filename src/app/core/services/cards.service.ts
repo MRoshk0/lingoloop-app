@@ -22,10 +22,23 @@ interface CardResponse {
   deckId: string | null;
   createdAt: string;
   updatedAt: string;
+  dueDate?: string;
+  intervalDays?: number;
+  repetitions?: number;
+  easeFactor?: number;
 }
 
 function toCard(c: CardResponse): Card {
-  return { id: c.id, frontText: c.frontText, backText: c.backText, deckId: c.deckId };
+  return {
+    id: c.id,
+    frontText: c.frontText,
+    backText: c.backText,
+    deckId: c.deckId,
+    dueDate: c.dueDate,
+    intervalDays: c.intervalDays,
+    repetitions: c.repetitions,
+    easeFactor: c.easeFactor,
+  };
 }
 
 function toDeck(d: DeckResponse): CardSet {
@@ -88,6 +101,18 @@ export class CardsService {
           )
         )
       );
+  }
+
+  reviewCard(cardId: string, rating: number): Observable<Card> {
+    return this.http
+      .post<CardResponse>(`${this.base}/api/cards/${cardId}/review`, { rating })
+      .pipe(map(toCard));
+  }
+
+  getDueCards(deckId: string): Observable<Card[]> {
+    return this.http
+      .get<CardResponse[]>(`${this.base}/api/decks/${deckId}/due-cards`)
+      .pipe(map((cards) => cards.map(toCard)));
   }
 
   deleteSet(deckId: string): Observable<void> {
