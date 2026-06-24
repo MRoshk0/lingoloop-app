@@ -327,3 +327,198 @@
   height: 52px;
   margin-top: 8px;
 }
+
+// ── Idle additions ────────────────────────────────────────────────────────
+
+.practice-btn {
+  --border-radius: var(--app-border-radius);
+  --border-color: var(--ion-color-primary);
+  --color: var(--ion-text-color);
+  height: 52px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+// ── Picking additions ─────────────────────────────────────────────────────
+
+.random-game-section {
+  margin-top: 8px;
+}
+
+.random-game-btn {
+  --border-radius: var(--app-border-radius);
+  --border-color: #4caf93;
+  --color: #4caf93;
+  height: 52px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+
+// ── Random Setup ──────────────────────────────────────────────────────────
+
+.random-setup-screen {
+  padding-top: 24px;
+  gap: 24px;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+.setup-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ion-text-color);
+  margin: 0;
+  text-align: center;
+}
+
+.setup-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.setup-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #b8a467;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.all-decks-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--app-surface-color);
+  border-radius: var(--app-border-radius);
+  padding: 14px 16px;
+  cursor: pointer;
+}
+
+.all-decks-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ion-text-color);
+}
+
+.toggle-btn {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  background: rgba(61, 46, 0, 0.15);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+  padding: 0;
+  flex-shrink: 0;
+
+  &--on {
+    background: var(--ion-color-primary);
+  }
+}
+
+.toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+
+  .toggle-btn--on & {
+    transform: translateX(20px);
+  }
+}
+
+.deck-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.deck-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 2px solid rgba(61, 46, 0, 0.2);
+  border-radius: var(--app-border-radius);
+  background: transparent;
+  color: var(--ion-text-color);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: default;
+  }
+
+  &--selected {
+    background: var(--ion-color-primary);
+    border-color: var(--ion-color-primary);
+    color: var(--ion-color-primary-contrast);
+  }
+}
+
+.deck-chip-count {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.count-presets {
+  display: flex;
+  gap: 8px;
+}
+
+.count-chip {
+  flex: 1;
+  padding: 10px 8px;
+  border: 2px solid rgba(61, 46, 0, 0.2);
+  border-radius: var(--app-border-radius);
+  background: transparent;
+  color: var(--ion-text-color);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+
+  &--selected {
+    background: var(--ion-color-primary);
+    border-color: var(--ion-color-primary);
+    color: var(--ion-color-primary-contrast);
+  }
+}
+
+.count-custom-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid rgba(61, 46, 0, 0.2);
+  border-radius: var(--app-border-radius);
+  background: transparent;
+  color: var(--ion-text-color);
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  box-sizing: border-box;
+  outline: none;
+
+  &:focus {
+    border-color: var(--ion-color-primary);
+  }
+}
+
+.setup-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+}

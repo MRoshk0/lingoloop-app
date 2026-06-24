@@ -1,0 +1,28 @@
+<div class="player-screen">
+  <div class="player-header">
+    <span class="progress-text">{{ progress() }}</span>
+    <button class="close-btn" (click)="closed.emit()">✕</button>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" [style.width.%]="progressPercent()"></div>
+    </div>
+  </div>
+
+  <div class="card-area">
+    <ion-card class="flashcard" (click)="onCardTap()">
+      <ion-card-content>
+        <p class="front-text">{{ frontText() }}</p>
+
+        @if (showBack()) {
+          <div class="divider"></div>
+          <p class="back-text">{{ backText() }}</p>
+          <p class="tap-hint">Tap to continue</p>
+        } @else {
+          <p class="tap-hint">Tap to reveal</p>
+        }
+      </ion-card-content>
+    </ion-card>
+  </div>
+</div>

@@ -21,6 +21,12 @@
           }
         </div>
       }
+
+      <div class="random-game-section">
+        <ion-button expand="block" fill="outline" class="random-game-btn" (click)="openRandomSetup()">
+          🎲 Random Game
+        </ion-button>
+      </div>
     </div>
   }
 
@@ -51,7 +57,10 @@
           } @else {
             <ion-icon slot="start" name="play-circle"></ion-icon>
           }
-          Start Review
+          Start SM-2 Review
+        </ion-button>
+        <ion-button expand="block" fill="outline" class="practice-btn" (click)="startPractice()">
+          Practice ({{ selectedDeck()?.cards?.length ?? 0 }} cards)
         </ion-button>
         <ion-button expand="block" fill="clear" class="back-link" (click)="pickAnother()">
           Choose a different deck
@@ -132,6 +141,134 @@
       </ion-button>
       <ion-button expand="block" fill="outline" class="back-btn" (click)="pickAnother()">
         Choose Another Deck
+      </ion-button>
+    </div>
+  }
+
+  <!-- ── PRACTICING ── -->
+  @if (state() === 'practicing') {
+    <app-flashcard-player
+      [frontText]="currentPracticeCard().frontText"
+      [backText]="currentPracticeCard().backText"
+      [progress]="practiceProgress()"
+      [progressPercent]="practiceProgressPercent()"
+      (closed)="stopPractice()"
+      (next)="practiceNext()"
+    />
+  }
+
+  <!-- ── PRACTICE COMPLETE ── -->
+  @if (state() === 'practice-complete') {
+    <div class="screen complete-screen">
+      <span class="complete-emoji">✅</span>
+      <h1 class="complete-title">Deck finished!</h1>
+      <p class="complete-sub">{{ practiceCards().length }} cards practiced</p>
+
+      <ion-button expand="block" class="play-btn" (click)="restartPractice()">
+        Play Again
+      </ion-button>
+      <ion-button expand="block" fill="outline" class="back-btn" (click)="pickAnother()">
+        Choose a Deck
+      </ion-button>
+    </div>
+  }
+
+  <!-- ── RANDOM SETUP ── -->
+  @if (state() === 'random-setup') {
+    <div class="screen random-setup-screen">
+      <h1 class="setup-title">🎲 Random Game</h1>
+
+      <div class="setup-section">
+        <h2 class="setup-section-title">Select decks</h2>
+
+        <div class="all-decks-row" (click)="toggleAllDecks()">
+          <span class="all-decks-label">All decks</span>
+          <button
+            class="toggle-btn"
+            [class.toggle-btn--on]="allDecksSelected()"
+            (click)="$event.stopPropagation(); toggleAllDecks()"
+          >
+            <span class="toggle-knob"></span>
+          </button>
+        </div>
+
+        <div class="deck-chips">
+          @for (deck of decks(); track deck.id) {
+            <button
+              class="deck-chip"
+              [class.deck-chip--selected]="allDecksSelected() || randomSelectedDeckIds().has(deck.id)"
+              [disabled]="allDecksSelected()"
+              (click)="toggleDeckSelection(deck.id)"
+            >
+              {{ deck.name }}
+              <span class="deck-chip-count">{{ deck.cards.length }}</span>
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="setup-section">
+        <h2 class="setup-section-title">Number of cards</h2>
+        <div class="count-presets">
+          @for (n of [10, 20, 30, 50]; track n) {
+            <button
+              class="count-chip"
+              [class.count-chip--selected]="randomCardCount() === n"
+              (click)="setRandomCardCount(n)"
+            >
+              {{ n }}
+            </button>
+          }
+        </div>
+        <input
+          type="number"
+          class="count-custom-input"
+          [value]="randomCardCount()"
+          min="5"
+          max="100"
+          placeholder="Custom…"
+          (change)="onCustomCountChange($event)"
+        />
+      </div>
+
+      <div class="setup-actions">
+        <ion-button expand="block" class="play-btn" (click)="startRandomGame()">
+          Start Game
+        </ion-button>
+        <ion-button expand="block" fill="clear" class="back-link" (click)="backFromRandomSetup()">
+          Back
+        </ion-button>
+      </div>
+    </div>
+  }
+
+  <!-- ── RANDOM PLAYING ── -->
+  @if (state() === 'random-playing') {
+    <app-flashcard-player
+      [frontText]="currentRandomCard().frontText"
+      [backText]="currentRandomCard().backText"
+      [progress]="randomProgress()"
+      [progressPercent]="randomProgressPercent()"
+      (closed)="backFromRandomSetup()"
+      (next)="randomNext()"
+    />
+  }
+
+  <!-- ── RANDOM COMPLETE ── -->
+  @if (state() === 'random-complete') {
+    <div class="screen complete-screen">
+      <span class="complete-emoji">🎲</span>
+      <h1 class="complete-title">Game over!</h1>
+      <p class="complete-sub">{{ randomCards().length }} cards practiced</p>
+
+      <ion-button expand="block" class="play-btn" (click)="startRandomGame()">
+        Play Again
+      </ion-button>
+      <ion-button expand="block" fill="outline" class="back-btn" (click)="backToRandomSetup()">
+        Change Settings
+      </ion-button>
+      <ion-button expand="block" fill="clear" class="back-link" (click)="backFromRandomSetup()">
+        Back to Decks
       </ion-button>
     </div>
   }
