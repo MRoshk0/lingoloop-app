@@ -1,6 +1,9 @@
-import { Component, inject, signal, computed } from '@angular/core';
+import { Component, inject, signal, computed, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import {
   IonContent,
   IonHeader,
@@ -11,6 +14,7 @@ import {
   IonInput,
   IonButton,
   IonIcon,
+  IonSpinner,
   ModalController,
   AlertController,
 } from '@ionic/angular/standalone';
@@ -23,9 +27,11 @@ import {
   checkmarkOutline,
   closeOutline,
   cameraOutline,
+  warningOutline,
 } from 'ionicons/icons';
 import { CardsService } from '../../../../core/services/cards.service';
 import { PhotoCardService } from '../../../../core/services/photo-card.service';
+import { TranslationService } from '../../../../core/services/translation.service';
 import { PhotoCardsModalComponent } from './photo-cards-modal/photo-cards-modal.component';
 
 @Component({
@@ -42,6 +48,7 @@ import { PhotoCardsModalComponent } from './photo-cards-modal/photo-cards-modal.
     IonInput,
     IonButton,
     IonIcon,
+    IonSpinner,
   ],
   templateUrl: './set-detail.component.html',
   styleUrls: ['./set-detail.component.scss'],
@@ -51,11 +58,29 @@ export class SetDetailComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private photoCardService = inject(PhotoCardService);
+  private translationService = inject(TranslationService);
   private modalController = inject(ModalController);
   private alertController = inject(AlertController);
+  private destroyRef = inject(DestroyRef);
 
   setId = this.route.snapshot.paramMap.get('setId') ?? '';
   set = computed(() => this.cardsService.getSet(this.setId));
+
+  duplicateFrontTexts = computed(() => {
+    const texts = (this.set()?.cards ?? []).map((c) => c.frontText.trim().toLowerCase());
+    return new Set(texts.filter((t, i) => texts.indexOf(t) !== i));
+  });
+
+  // Search
+  searchQuery = signal('');
+  filteredCards = computed(() => {
+    const cards = this.set()?.cards ?? [];
+    const q = this.searchQuery().trim().toLowerCase();
+    if (!q) return cards;
+    return cards.filter(
+      (c) => c.frontText.toLowerCase().includes(q) || c.backText.toLowerCase().includes(q)
+    );
+  });
 
   // Deck edit
   isEditingHeader = signal(false);
@@ -66,6 +91,10 @@ export class SetDetailComponent {
   frontText = signal('');
   backText = signal('');
   showForm = signal(false);
+  isTranslating = signal(false);
+
+  private autoFilled = signal(false);
+  private frontText$ = new Subject<string>();
 
   // Edit state
   editingCardId = signal<string | null>(null);
@@ -84,10 +113,33 @@ export class SetDetailComponent {
       checkmarkOutline,
       closeOutline,
       cameraOutline,
+      warningOutline,
     });
     if (!this.cardsService.getSet(this.setId)) {
       this.cardsService.loadDecks().subscribe();
     }
+
+    this.frontText$
+      .pipe(
+        debounceTime(600),
+        distinctUntilChanged(),
+        switchMap((word) => {
+          if (!word.trim()) {
+            this.isTranslating.set(false);
+            return [];
+          }
+          this.isTranslating.set(true);
+          return this.translationService.deToUk(word);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((translation) => {
+        this.isTranslating.set(false);
+        if (translation && (this.backText().trim() === '' || this.autoFilled())) {
+          this.backText.set(translation);
+          this.autoFilled.set(true);
+        }
+      });
   }
 
   startEditHeader() {
@@ -114,6 +166,14 @@ export class SetDetailComponent {
     this.isEditingHeader.set(false);
   }
 
+  onFrontTextInput() {
+    this.frontText$.next(this.frontText());
+  }
+
+  onBackTextInput() {
+    this.autoFilled.set(false);
+  }
+
   addCard() {
     const front = this.frontText().trim();
     const back = this.backText().trim();
@@ -122,6 +182,7 @@ export class SetDetailComponent {
       next: () => {
         this.frontText.set('');
         this.backText.set('');
+        this.autoFilled.set(false);
         this.showForm.set(false);
       },
       error: (err) => console.error('Failed to add card', err),

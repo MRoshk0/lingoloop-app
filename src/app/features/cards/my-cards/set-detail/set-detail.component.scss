@@ -167,6 +167,42 @@
   }
 }
 
+.duplicate-banner {
+  margin: 0 16px 8px;
+  padding: 8px 12px;
+  background: #fff3cd;
+  color: #856404;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.duplicate {
+  border-left: 3px solid #ff6b6b;
+}
+
+.duplicate-icon {
+  color: #ff6b6b;
+  font-size: 14px;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+.translating-hint {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 16px 0;
+  color: #b8a467;
+  font-size: 13px;
+}
+
+.translating-spinner {
+  width: 14px;
+  height: 14px;
+  color: #b8a467;
+}
+
 .add-area {
   padding: 16px;
   display: flex;
